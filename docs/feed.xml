@@ -5,13 +5,16 @@
     <link>https://www.abc.net.au/triplej/programs/house-party</link>
     <description>Triple J House Party DJ mix show</description>
     <language>en-au</language>
+    <itunes:author>Triple J</itunes:author>
+    <itunes:summary>House Party preview feed – first 2 hours split into 1‑hour MP3 parts.</itunes:summary>
+    <itunes:explicit>false</itunes:explicit>
     <item>
       <title>Sat 18 Apr 2026 at 8:00am – House Party Part 1 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106556580</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106556580#part1</guid>
       <description/>
       <pubDate>Sat, 18 Apr 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-feed/mp3/106556580_h1.mp3" type="audio/mpeg" length="0"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106556580_h1.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
       <title>Sat 18 Apr 2026 at 8:00am – House Party Part 2 [Latifa Tee]</title>
@@ -19,7 +22,7 @@
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106556580#part2</guid>
       <description/>
       <pubDate>Sat, 18 Apr 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-feed/mp3/106556580_h2.mp3" type="audio/mpeg" length="0"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106556580_h2.mp3" type="audio/mpeg" length="86401197"/>
     </item>
   </channel>
 </rss>
