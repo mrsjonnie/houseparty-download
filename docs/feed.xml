@@ -1,25 +1,25 @@
 <?xml version="1.0" ?>
 <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
   <channel>
-    <title>Triple J House Party</title>
+    <title>Triple J House Party Local</title>
     <link>https://www.abc.net.au/triplej/programs/house-party</link>
     <description>Triple J House Party DJ mix show</description>
     <language>en-au</language>
     <item>
-      <title>Sat 18 Apr 2026 at 8:00am – House Party [[Latifa Tee](https://www.abc.net.au/triplej/latifa-tee/13574792)]</title>
+      <title>Sat 18 Apr 2026 at 8:00am – House Party Part 1 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106556580</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106556580</guid>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106556580#part1</guid>
       <description/>
       <pubDate>Sat, 18 Apr 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-feed/mp3/106556580.mp3" type="audio/mpeg" length="0"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-feed/mp3/106556580_h1.mp3" type="audio/mpeg" length="0"/>
     </item>
     <item>
-      <title>Fri 17 Apr 2026 at 8:00am – House Party [[Shantan Wantan Ichiban](https://www.abc.net.au/triplej/shantan-wantan-ichiban/7952780)]</title>
+      <title>Fri 17 Apr 2026 at 8:00am – House Party Part 1 [Shantan Wantan Ichiban]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106555166</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106555166</guid>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106555166#part1</guid>
       <description/>
       <pubDate>Fri, 17 Apr 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-feed/mp3/106555166.mp3" type="audio/mpeg" length="0"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-feed/mp3/106555166_h1.mp3" type="audio/mpeg" length="0"/>
     </item>
   </channel>
 </rss>
