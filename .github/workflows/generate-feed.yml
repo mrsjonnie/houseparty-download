@@ -2,21 +2,24 @@ name: Generate Triple J House Party RSS Feed
 
 on:
   schedule:
+    # Run every Saturday at 06:00 UTC (08:00 CEST / 07:00 CET)
     - cron: '0 6 * * 6'
-         # - cron: '0 6 * * *'   # every day at 06:00 UTC (adjust as you like)
-  workflow_dispatch:
+  workflow_dispatch:   # allow manual runs as well
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Give the job permission to push to the repo
+    permissions:
+      contents: write   # needed to push commits
+
     steps:
-      # 1️⃣ Checkout the repo (with write permission so we can push MP3s back)
+      # 1️⃣ Checkout the repo (default persists credentials)
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: false
-          fetch-depth: 0
+          # persist-credentials: true   # default, can be omitted
 
       # 2️⃣ Set up Python
       - name: Set up Python
@@ -47,7 +50,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      # 7️⃣ Commit & push any new/updated files (feed.xml + MP3s)
+      # 7️⃣ Set remote URL with token so push works
+      - name: Set remote URL for push
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
+      # 8️⃣ Commit & push any new/updated files (feed.xml + MP3s)
       - name: Commit changes
         run: |
           git add docs/feed.xml docs/mp3/*.mp3 || true
