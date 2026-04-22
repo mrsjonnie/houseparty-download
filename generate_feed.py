@@ -91,7 +91,7 @@ def convert_first_two_minutes(aac_url, mp3_path):
         "ffmpeg",
         "-y",                     # overwrite output
         "-i", aac_url,
-        "-t", "01:02:00",        # take only the first 1 hour and 2 minutes
+        "-t", "01:02:00",        # take only the first 1 hour and 2 minutes - AANPASSEN / ADJUST
         "-c:a", "libmp3lame",
         "-b:a", "192k",
         "-write_xing", "1",      # crucial for seeking on MP3
