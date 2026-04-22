@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 """
-House Party podcast generator – keep only the last 3 episodes.
+House Party podcast generator – first 2 minutes, keep only the 3 newest episodes.
 Steps:
 1. Try to get episode list from ABC collection API (fallback: scrape program page).
 2. For each episode (newest first):
    - Extract AAC URL, publish date, presenter name & profile URL, and episode title.
-   - Download the .aac file.
-   - Convert it to MP3 with ffmpeg (adds XING header for reliable seeking).
+   - Use ffmpeg to download the first 2 minutes of the AAC stream and convert to MP3.
    - Store MP3 as docs/mp3/<episode-id>.mp3.
    - Build RSS <item> with title "<date> – House Party [Presenter](URL)".
-3. Stop after 3 episodes.
+3. After processing, keep only the three newest MP3 files; delete the rest.
 4. Write docs/feed.xml.
 """
 
-import json, os, re, sys, subprocess
+import json, os, re, sys, subprocess, glob
 from datetime import datetime, timezone
 from xml.etree.ElementTree import Element, SubElement, tostring
 import xml.dom.minidom
@@ -86,28 +85,13 @@ def get_episode_urls_from_program_page():
         return []
 
 
-def download_and_convert(aac_url, mp3_path):
-    """Download .aac and convert to MP3 using ffmpeg (adds XING header)."""
-    tmp_aac = mp3_path + ".tmp.aac"
-    headers = {"User-Agent": "Mozilla/5.0"}
-    try:
-        with requests.get(aac_url, headers=headers, stream=True, timeout=30) as r:
-            r.raise_for_status()
-            with open(tmp_aac, "wb") as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    if chunk:
-                        f.write(chunk)
-    except Exception as e:
-        print(f"  FOUT bij downloaden {aac_url}: {e}")
-        if os.path.exists(tmp_aac):
-            os.remove(tmp_aac)
-        return False
-
-    # ffmpeg conversion – libmp3lame, 192k, XING header for seeking
+def convert_first_two_minutes(aac_url, mp3_path):
+    """Download first 2 minutes of AAC and convert to MP3 (adds XING header)."""
     ffmpeg_cmd = [
         "ffmpeg",
         "-y",                     # overwrite output
-        "-i", tmp_aac,
+        "-i", aac_url,
+        "-t", "00:02:00",        # take only the first 2 minutes
         "-c:a", "libmp3lame",
         "-b:a", "192k",
         "-write_xing", "1",      # crucial for seeking on MP3
@@ -115,15 +99,10 @@ def download_and_convert(aac_url, mp3_path):
     ]
     try:
         subprocess.run(ffmpeg_cmd, check=True, capture_output=True, text=True)
+        return True
     except subprocess.CalledProcessError as e:
         print(f"  FOUT bij ffmpeg conversie: {e.stderr[:200]}")
-        if os.path.exists(tmp_aac):
-            os.remove(tmp_aac)
         return False
-    finally:
-        if os.path.exists(tmp_aac):
-            os.remove(tmp_aac)
-    return True
 
 
 def extract_episode_info(page_url):
@@ -282,6 +261,19 @@ def build_rss(items):
     ).toprettyxml(indent="  ")
 
 
+def cleanup_old_mp3s(keep_n=3):
+    """Keep only the newest `keep_n` MP3 files in MP3_DIR; delete the rest."""
+    mp3_files = glob.glob(os.path.join(MP3_DIR, "*.mp3"))
+    # sort by modification time, newest first
+    mp3_files.sort(key=lambda p: os.path.getmtime(p), reverse=True)
+    for old_file in mp3_files[keep_n:]:
+        try:
+            os.remove(old_file)
+            print(f"  Removed old MP3: {os.path.basename(old_file)}")
+        except OSError as e:
+            print(f"  FOUT bij verwijderen {old_file}: {e}")
+
+
 # ----------------------------------------------------------------------
 if __name__ == "__main__":
     os.makedirs("docs", exist_ok=True)
@@ -321,15 +313,14 @@ if __name__ == "__main__":
         mp3_filename = f"{episode_id}.mp3"
         mp3_path = os.path.join(MP3_DIR, mp3_filename)
 
-        # Download & convert only if MP3 does not exist yet
-        if not os.path.exists(mp3_path):
-            print(f"  Downloaden & converteren naar MP3 …")
-            ok = download_and_convert(audio_url, mp3_path)
-            if not ok:
-                print("  OVERGESLAGEN (conversie mislukt)")
-                continue
+        # Convert first 2 minutes to MP3
+        print(f"  Converteren eerste 2 minuten naar MP3 …")
+        ok = convert_first_two_minutes(audio_url, mp3_path)
+        if not ok:
+            print("  OVERGESLAGEN (conversie mislukt)")
+            continue
         else:
-            print(f"  MP3 bestaat al: {mp3_filename}")
+            print(f"  MP3 klaar: {mp3_filename}")
 
         # Enclosure URL points to the MP3 served by GitHub Pages
         audio_url_for_feed = f"https://mrsjonnie.github.io/houseparty-feed/mp3/{mp3_filename}"
@@ -354,10 +345,11 @@ if __name__ == "__main__":
         )
         print(f"  OK: {title}")
 
-        # Stop after we have 3 episodes (newest first)
-        if len(data) >= 3:
-            print("  MAX 3 AFLEVERINGEN BEREIKT – stoppen")
-            break
+        # After each successful conversion we can clean up, but we’ll do it once at the end
+        # (keeps the logic simple)
+
+    # Keep only the three newest MP3 files
+    cleanup_old_mp3s(keep_n=3)
 
     print(f"Feed bouwen met {len(data)} afleveringen …")
     with open("docs/feed.xml", "w", encoding="utf-8") as f:
