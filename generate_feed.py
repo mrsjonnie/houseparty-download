@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 """
-House Party podcast generator – first 2 minutes, keep only the 3 newest episodes.
-Steps:
-1. Try to get episode list from ABC collection API (fallback: scrape program page).
-2. For each episode (newest first):
-   - Extract AAC URL, publish date, presenter name & profile URL, and episode title.
-   - Use ffmpeg to download the first 2 minutes of the AAC stream and convert to MP3.
-   - Store MP3 as docs/mp3/<episode-id>.mp3.
-   - Build RSS <item> with title "<date> – House Party [Presenter](URL)".
-3. After processing, keep only the three newest MP3 files; delete the rest.
-4. Write docs/feed.xml.
+House Party podcast generator – configurable preview length and episode count.
+
+Set:
+    AANTAL_AFLEVERINGEN   – how many episodes to keep (newest first)
+    AANTAL_MINUTEN        – length of the preview per episode (MM:SS or HH:MM:SS)
+
+The script:
+    • Tries the ABC collection API (fallback: scrape the program page).
+    • For each episode (newest first) downloads the AAC stream,
+      keeps only the first AANTAL_MINUTEN, converts to MP3 (ffmpeg, XING header).
+    • Stores MP3 files under docs/mp3/.
+    • Builds an RSS feed (docs/feed.xml) whose <title> follows:
+          "<date> – House Party [Presenter Name](Presenter URL)"
+    • After processing, keeps only the newest AANTAL_AFLEVERINGEN MP3 files,
+      deleting the rest.
 """
 
 import json, os, re, sys, subprocess, glob
@@ -19,6 +24,11 @@ import xml.dom.minidom
 import requests
 
 # ----------------------------------------------------------------------
+# ★★★ USER‑CONFIGURABLE SETTINGS ★★★
+AANTAL_AFLEVERINGEN = 2          # how many episodes to retain
+AANTAL_MINUTEN    = "00:02:00"   # preview length per episode (HH:MM:SS)
+# ----------------------------------------------------------------------
+
 BASE_URL = "https://www.abc.net.au/triplej/programs/house-party"
 PROGRAM_PAGE = BASE_URL                     # https://www.abc.net.au/triplej/programs/house-party
 COLLECTION_API = (
@@ -85,13 +95,13 @@ def get_episode_urls_from_program_page():
         return []
 
 
-def convert_first_two_minutes(aac_url, mp3_path):
-    """Download first X minutes of AAC and convert to MP3 (adds XING header)."""
+def convert_preview_to_mp3(aac_url, mp3_path):
+    """Download the first AANTAL_MINUTEN of AAC and convert to MP3 (adds XING header)."""
     ffmpeg_cmd = [
         "ffmpeg",
         "-y",                     # overwrite output
         "-i", aac_url,
-        "-t", "01:02:00",        # take only the first 1 hour and 2 minutes - AANPASSEN / ADJUST
+        "-t", AANTAL_MINUTEN,    # take only the first N minutes
         "-c:a", "libmp3lame",
         "-b:a", "192k",
         "-write_xing", "1",      # crucial for seeking on MP3
@@ -261,7 +271,7 @@ def build_rss(items):
     ).toprettyxml(indent="  ")
 
 
-def cleanup_old_mp3s(keep_n=3):
+def cleanup_old_mp3s(keep_n=AANTAL_AFLEVERINGEN):
     """Keep only the newest `keep_n` MP3 files in MP3_DIR; delete the rest."""
     mp3_files = glob.glob(os.path.join(MP3_DIR, "*.mp3"))
     # sort by modification time, newest first
@@ -313,9 +323,9 @@ if __name__ == "__main__":
         mp3_filename = f"{episode_id}.mp3"
         mp3_path = os.path.join(MP3_DIR, mp3_filename)
 
-        # Convert first 2 minutes to MP3
-        print(f"  Converteren eerste 2 minuten naar MP3 …")
-        ok = convert_first_two_minutes(audio_url, mp3_path)
+        # Convert preview to MP3
+        print(f"  Converteren eerste {AANTAL_MINUTEN} naar MP3 …")
+        ok = convert_preview_to_mp3(audio_url, mp3_path)
         if not ok:
             print("  OVERGESLAGEN (conversie mislukt)")
             continue
@@ -345,11 +355,13 @@ if __name__ == "__main__":
         )
         print(f"  OK: {title}")
 
-        # After each successful conversion we can clean up, but we’ll do it once at the end
-        # (keeps the logic simple)
+        # Stop after we have processed AANTAL_AFLEVERINGEN episodes (newest first)
+        if len(data) >= AANTAL_AFLEVERINGEN:
+            print(f"  MAX {AANTAL_AFLEVERINGEN} AFLEVERINGEN BEREikt – stoppen")
+            break
 
-    # Keep only the three newest MP3 files
-    cleanup_old_mp3s(keep_n=3)
+    # Keep only the newest AANTAL_AFLEVERINGEN MP3 files
+    cleanup_old_mp3s()
 
     print(f"Feed bouwen met {len(data)} afleveringen …")
     with open("docs/feed.xml", "w", encoding="utf-8") as f:
