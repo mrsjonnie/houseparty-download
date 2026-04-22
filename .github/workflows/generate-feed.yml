@@ -2,7 +2,8 @@ name: Generate Triple J House Party RSS Feed
 
 on:
   schedule:
-    - cron: '0 6 * * *'   # every day at 06:00 UTC (adjust as you like)
+    - cron: '0 6 * * 6'
+         # - cron: '0 6 * * *'   # every day at 06:00 UTC (adjust as you like)
   workflow_dispatch:
 
 jobs:
