@@ -6,7 +6,7 @@
     <description>Triple J House Party DJ mix show</description>
     <language>en-au</language>
     <itunes:author>Triple J</itunes:author>
-    <itunes:summary>House Party preview feed – first 2 hours split into 1‑hour MP3 parts.</itunes:summary>
+    <itunes:summary>House Party preview feed – first 3 hours split into 1‑hour MP3 parts.</itunes:summary>
     <itunes:explicit>false</itunes:explicit>
     <item>
       <title>Sat 18 Apr 2026 at 8:00am – House Party Part 1 [Latifa Tee]</title>
@@ -23,6 +23,38 @@
       <description/>
       <pubDate>Sat, 18 Apr 2026 00:00:00 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106556580_h2.mp3" type="audio/mpeg" length="86401197"/>
+    </item>
+    <item>
+      <title>Sat 18 Apr 2026 at 8:00am – House Party Part 3 [Latifa Tee]</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106556580</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106556580#part3</guid>
+      <description/>
+      <pubDate>Sat, 18 Apr 2026 00:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106556580_h3.mp3" type="audio/mpeg" length="86401197"/>
+    </item>
+    <item>
+      <title>Fri 17 Apr 2026 at 8:00am – House Party Part 1 [Shantan Wantan Ichiban]</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106555166</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106555166#part1</guid>
+      <description/>
+      <pubDate>Fri, 17 Apr 2026 00:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106555166_h1.mp3" type="audio/mpeg" length="86401197"/>
+    </item>
+    <item>
+      <title>Fri 17 Apr 2026 at 8:00am – House Party Part 2 [Shantan Wantan Ichiban]</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106555166</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106555166#part2</guid>
+      <description/>
+      <pubDate>Fri, 17 Apr 2026 00:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106555166_h2.mp3" type="audio/mpeg" length="86401197"/>
+    </item>
+    <item>
+      <title>Fri 17 Apr 2026 at 8:00am – House Party Part 3 [Shantan Wantan Ichiban]</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106555166</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106555166#part3</guid>
+      <description/>
+      <pubDate>Fri, 17 Apr 2026 00:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106555166_h3.mp3" type="audio/mpeg" length="86401197"/>
     </item>
   </channel>
 </rss>
