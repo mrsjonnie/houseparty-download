@@ -1,13 +1,28 @@
 #!/usr/bin/env python3
 """
-House Party podcast generator – configurable preview length and episode count.
-Feed title: "Triple J House Party Local"
-Episode title format (no URL inside the title):
-    "<date> – House Party [Presenter Name]"
-The presenter URL is still stored in <link> and <guid>.
+House Party podcast generator – split into 1‑hour MP3 parts, 192 kbps.
+
+User‑configurable variables (top of file):
+    AANTAL_AFLEVERINGEN : how many MP3 parts (hour‑chunks) to keep (newest first)
+    AANTAL_MINUTEN     : total length to capture from each episode (HH:MM:SS), max 03:00:00
+
+The script:
+    • Tries the ABC collection API (fallback: scrape the program page).
+    • For each episode extracts the AAC URL, publish date,
+      presenter name & URL, and episode title.
+    • Splits the requested total length into 1‑hour chunks (max 3 chunks).
+    • Each chunk is downloaded with ffmpeg (‑ss/‑t) and converted to MP3
+      (192 kbps CBR, XING header) → ~86 MB per hour.
+    • MP3 files are named <episode_id>_h<N>.mp3 (N = 1,2,3).
+    • Each chunk gets its own <item> in the RSS feed:
+          title = "<date> – House Party Part N [Presenter]"
+          link  = episode URL
+          guid  = episode URL + "#partN"
+    • After processing, only the newest AANTAL_AFLEVERINGEN MP3 files are kept;
+      older ones are deleted.
 """
 
-import json, os, re, sys, subprocess, glob
+import json, os, re, sys, subprocess, glob, math
 from datetime import datetime, timezone
 from xml.etree.ElementTree import Element, SubElement, tostring
 import xml.dom.minidom
@@ -15,8 +30,8 @@ import requests
 
 # ----------------------------------------------------------------------
 # ★★★ USER‑CONFIGURABLE SETTINGS ★★★
-AANTAL_AFLEVERINGEN = 2          # how many episodes to retain (newest first)
-AANTAL_MINUTEN    = "02:00:00"   # preview length per episode (HH:MM:SS)
+AANTAL_AFLEVERINGEN = 2          # how many MP3 parts (hour‑chunks) to retain
+AANTAL_MINUTEN    = "00:02:00"   # total length to capture per episode (HH:MM:SS), max 03:00:00
 # ----------------------------------------------------------------------
 
 BASE_URL = "https://www.abc.net.au/triplej/programs/house-party"
@@ -29,6 +44,19 @@ MP3_DIR = "docs/mp3"
 os.makedirs(MP3_DIR, exist_ok=True)
 
 # ----------------------------------------------------------------------
+def parse_hms_to_seconds(hms: str) -> int:
+    """Convert HH:MM:SS (or MM:SS) to total seconds."""
+    parts = hms.strip().split(":")
+    if len(parts) == 3:
+        h, m, s = map(int, parts)
+        return h * 3600 + m * 60 + s
+    if len(parts) == 2:
+        m, s = map(int, parts)
+        return m * 60 + s
+    # assume seconds only
+    return int(parts[0])
+
+
 def get_episode_urls_from_api():
     """Try to fetch episode URLs from the ABC collection API (may return 403)."""
     headers = {
@@ -83,26 +111,6 @@ def get_episode_urls_from_program_page():
     except Exception as e:
         print(f"  FOUT bij ophalen programmapiagina: {e}")
         return []
-
-
-def convert_preview_to_mp3(aac_url, mp3_path):
-    """Download the first AANTAL_MINUTEN of AAC and convert to MP3 (adds XING header)."""
-    ffmpeg_cmd = [
-        "ffmpeg",
-        "-y",                     # overwrite output
-        "-i", aac_url,
-        "-t", AANTAL_MINUTEN,    # take only the first N minutes
-        "-c:a", "libmp3lame",
-        "-b:a", "192k",
-        "-write_xing", "1",      # crucial for seeking on MP3
-        mp3_path,
-    ]
-    try:
-        subprocess.run(ffmpeg_cmd, check=True, capture_output=True, text=True)
-        return True
-    except subprocess.CalledProcessError as e:
-        print(f"  FOUT bij ffmpeg conversie: {e.stderr[:200]}")
-        return False
 
 
 def extract_episode_info(page_url):
@@ -229,11 +237,11 @@ def format_date(upload_date_str):
 
 
 def build_rss(items):
-    """Build RSS feed with iTunes namespace – feed title changed to “Triple J House Party Local”. """
+    """Build RSS feed with iTunes namespace – feed title = “Triple J House Party Local”."""
     rss = Element("rss", version="2.0")
     rss.set("xmlns:itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
     ch = SubElement(rss, "channel")
-    SubElement(ch, "title").text = "Triple J House Party Local"   # <-- changed here
+    SubElement(ch, "title").text = "Triple J House Party Local"
     SubElement(ch, "link").text = BASE_URL
     SubElement(ch, "description").text = "Triple J House Party DJ mix show"
     SubElement(ch, "language").text = "en-au"
@@ -241,7 +249,7 @@ def build_rss(items):
         it = SubElement(ch, "item")
         SubElement(it, "title").text = ep["title"]
         SubElement(it, "link").text = ep["page_url"]
-        SubElement(it, "guid", isPermaLink="false").text = ep["page_url"]
+        SubElement(it, "guid", isPermaLink="false").text = ep["guid"]
         SubElement(it, "description").text = ep.get("description", "")[:500]
         if ep.get("date"):
             try:
@@ -286,7 +294,11 @@ if __name__ == "__main__":
             print("FOUT: Kon geen afleveringen vinden – eindigt.")
             sys.exit(1)
 
-    data = []
+    data = []   # each element will become one <item> in the feed
+    total_seconds_requested = parse_hms_to_seconds(AANTAL_MINUTEN)
+    # cap at 3 hours (the max we will ever split)
+    total_seconds_requested = min(total_seconds_requested, 3 * 3600)
+
     for url in episode_urls:
         print(f"Verwerken: {url}")
         info = extract_episode_info(url)
@@ -297,62 +309,88 @@ if __name__ == "__main__":
         audio_url = info["audio_url"]
         upload_date = info["upload_date"]
         date_str = format_date(upload_date) if upload_date else ""
-
         presenter_name = info["presenter_name"]
         presenter_url = info["presenter_url"]
+
+        # Build presenter part for title (no URL inside title)
         if presenter_name:
-            # Presenter name only – no URL inside the title
             presenter_part = f"[{presenter_name}]"
         else:
             presenter_part = ""
 
-        # Build MP3 filename from the numeric ID in the URL
-        m = re.search(r"/house-party/(\d+)", url)
-        episode_id = m.group(1) if m else url.split("/")[-1]
-        mp3_filename = f"{episode_id}.mp3"
-        mp3_path = os.path.join(MP3_DIR, mp3_filename)
-
-        # Convert preview to MP3
-        print(f"  Converteren eerste {AANTAL_MINUTEN} naar MP3 …")
-        ok = convert_preview_to_mp3(audio_url, mp3_path)
-        if not ok:
-            print("  OVERGESLAGEN (conversie mislukt)")
+        # Determine how many 1‑hour chunks we need (max 3)
+        if total_seconds_requested <= 0:
+            # nothing to capture
             continue
-        else:
-            print(f"  MP3 klaar: {mp3_filename}")
+        num_chunks = min(3, math.ceil(total_seconds_requested / 3600))
 
-        # Enclosure URL points to the MP3 served by GitHub Pages
-        audio_url_for_feed = f"https://mrsjonnie.github.io/houseparty-feed/mp3/{mp3_filename}"
+        for chunk_idx in range(num_chunks):
+            start_sec = chunk_idx * 3600
+            remaining = total_seconds_requested - start_sec
+            duration_sec = min(3600, remaining)
 
-        # Build title: <date> – House Party [Presenter]   (URL NOT inside title)
-        parts = []
-        if date_str:
-            parts.append(date_str)
-        parts.append("– House Party")
-        if presenter_part:
-            parts.append(f"[{presenter_part}]")
-        title = " ".join(parts)
+            # Build MP3 filename: <episode_id>_h<N>.mp3
+            m = re.search(r"/house-party/(\d+)", url)
+            episode_id = m.group(1) if m else url.split("/")[-1]
+            mp3_filename = f"{episode_id}_h{chunk_idx + 1}.mp3"
+            mp3_path = os.path.join(MP3_DIR, mp3_filename)
 
-        data.append(
-            {
-                "title": title,
-                "url": audio_url_for_feed,
-                "page_url": url,
-                "date": upload_date,
-                "description": "",  # optional
-            }
-        )
-        print(f"  OK: {title}")
+            # ffmpeg: -ss before -i for faster seeking, -t for duration
+            ffmpeg_cmd = [
+                "ffmpeg",
+                "-y",
+                "-ss", str(start_sec),
+                "-i", audio_url,
+                "-t", str(duration_sec),
+                "-c:a", "libmp3lame",
+                "-b:a", "192k",          # 192 kbps CBR
+                "-write_xing", "1",      # crucial for seeking on MP3
+                mp3_path,
+            ]
+            print(f"  Converteren chunk {chunk_idx+1}/{num_chunks} ({start_sec}s–{start_sec+duration_sec}s) → MP3 …")
+            ok = subprocess.run(ffmpeg_cmd, capture_output=True, text=True).returncode == 0
+            if not ok:
+                print(f"  FOUT bij ffmpeg conversie voor chunk {chunk_idx+1}")
+                continue
+            else:
+                print(f"  MP3 klaar: {mp3_filename}")
 
-        # Stop after we have processed AANTAL_AFLEVERINGEN episodes (newest first)
+            # Enclosure URL points to the MP3 served by GitHub Pages
+            audio_url_for_feed = f"https://mrsjonnie.github.io/houseparty-feed/mp3/{mp3_filename}"
+
+            # Build title: <date> – House Party Part N [Presenter]
+            parts = []
+            if date_str:
+                parts.append(date_str)
+            parts.append(f"– House Party Part {chunk_idx + 1}")
+            if presenter_part:
+                parts.append(presenter_part)
+            title = " ".join(parts)
+
+            # Unique guid: episode URL + fragment for this chunk
+            guid = f"{url}#part{chunk_idx + 1}"
+
+            data.append(
+                {
+                    "title": title,
+                    "url": audio_url_for_feed,
+                    "page_url": url,
+                    "guid": guid,
+                    "date": upload_date,
+                    "description": "",  # optional
+                }
+            )
+            print(f"  OK: {title}")
+
+        # Stop after we have processed enough episodes to fill the requested number of MP3 parts
         if len(data) >= AANTAL_AFLEVERINGEN:
-            print(f"  MAX {AANTAL_AFLEVERINGEN} AFLEVERINGEN BEREikt – stoppen")
+            print(f"  MAX {AANTAL_AFLEVERINGEN} MP3‑onderdelen BEREikt – stoppen")
             break
 
-    # Keep only the newest AANTAL_AFLEVERINGEN MP3 files
+    # Keep only the newest AANTAL_AFLEVERINGEN MP3 files overall
     cleanup_old_mp3s()
 
-    print(f"Feed bouwen met {len(data)} afleveringen …")
+    print(f"Feed bouwen met {len(data)} MP3‑onderdelen …")
     with open("docs/feed.xml", "w", encoding="utf-8") as f:
         f.write(build_rss(data))
     print(f"Klaar: docs/feed.xml ({len(data)} items)")
