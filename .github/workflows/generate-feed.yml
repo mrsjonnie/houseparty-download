@@ -2,29 +2,57 @@ name: Generate Triple J House Party RSS Feed
 
 on:
   schedule:
-    - cron: "0 20 * * 5"   # vrijdag 20:00 UTC
-    - cron: "0 20 * * 6"   # zaterdag 20:00 UTC
-  workflow_dispatch:       # handmatig uitvoeren mogelijk
-
-permissions:
-  contents: write          # nodig om naar de repo te pushen
+    - cron: '0 6 * * *'   # every day at 06:00 UTC (adjust as you like)
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # 1️⃣ Checkout the repo (with write permission so we can push MP3s back)
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # volledige geschiedenis voor pull‑rebase
-      - uses: actions/setup-python@v5
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
+          fetch-depth: 0
+
+      # 2️⃣ Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install yt-dlp requests   # <-- requests toegevoegd
-      - run: python generate_feed.py
-      - run: |
+
+      # 3️⃣ Install system dependencies (ffmpeg)
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      # 4️⃣ Install Python dependencies (only requests is needed)
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      # 5️⃣ Run the feed generator
+      - name: Generate feed & MP3s
+        run: |
+          python generate_feed.py
+
+      # 6️⃣ Configure git for committing back
+      - name: Configure git
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/feed.xml
-          git diff --staged --quiet && echo "Geen wijzigingen" || \
-            (git commit -m "Update RSS feed $(date -u '+%Y-%m-%d %H:%M UTC')" && \
-             git pull --rebase origin main && git push)
+
+      # 7️⃣ Commit & push any new/updated files (feed.xml + MP3s)
+      - name: Commit changes
+        run: |
+          git add docs/feed.xml docs/mp3/*.mp3 || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Update House Party feed & MP3s $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push origin HEAD:${{ github.ref }}
+          else
+            echo "No changes to commit"
+          fi
