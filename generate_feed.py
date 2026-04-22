@@ -14,8 +14,8 @@ import requests
 
 # ----------------------------------------------------------------------
 # ★★★ USER‑CONFIGURABLE SETTINGS ★★★
-AANTAL_AFLEVERINGEN = 2          # how many MP3 parts (hour‑chunks) to retain
-AANTAL_MINUTEN    = "02:00:00"   # total length to capture per episode (HH:MM:SS), max 03:00:00
+AANTAL_AFLEVERINGEN = 5          # how many MP3 parts (hour‑chunks) to retain
+AANTAL_MINUTEN    = "03:00:00"   # total length to capture per episode (HH:MM:SS), max 03:00:00
 # ----------------------------------------------------------------------
 
 BASE_URL = "https://www.abc.net.au/triplej/programs/house-party"
