@@ -86,12 +86,12 @@ def get_episode_urls_from_program_page():
 
 
 def convert_first_two_minutes(aac_url, mp3_path):
-    """Download first 2 minutes of AAC and convert to MP3 (adds XING header)."""
+    """Download first X minutes of AAC and convert to MP3 (adds XING header)."""
     ffmpeg_cmd = [
         "ffmpeg",
         "-y",                     # overwrite output
         "-i", aac_url,
-        "-t", "00:02:00",        # take only the first 2 minutes
+        "-t", "01:02:00",        # take only the first 1 hour and 2 minutes
         "-c:a", "libmp3lame",
         "-b:a", "192k",
         "-write_xing", "1",      # crucial for seeking on MP3
