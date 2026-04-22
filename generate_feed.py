@@ -1,20 +1,10 @@
 #!/usr/bin/env python3
 """
 House Party podcast generator – configurable preview length and episode count.
-
-Set:
-    AANTAL_AFLEVERINGEN   – how many episodes to keep (newest first)
-    AANTAL_MINUTEN        – length of the preview per episode (MM:SS or HH:MM:SS)
-
-The script:
-    • Tries the ABC collection API (fallback: scrape the program page).
-    • For each episode (newest first) downloads the AAC stream,
-      keeps only the first AANTAL_MINUTEN, converts to MP3 (ffmpeg, XING header).
-    • Stores MP3 files under docs/mp3/.
-    • Builds an RSS feed (docs/feed.xml) whose <title> follows:
-          "<date> – House Party [Presenter Name](Presenter URL)"
-    • After processing, keeps only the newest AANTAL_AFLEVERINGEN MP3 files,
-      deleting the rest.
+Feed title: "Triple J House Party Local"
+Episode title format (no URL inside the title):
+    "<date> – House Party [Presenter Name]"
+The presenter URL is still stored in <link> and <guid>.
 """
 
 import json, os, re, sys, subprocess, glob
@@ -25,7 +15,7 @@ import requests
 
 # ----------------------------------------------------------------------
 # ★★★ USER‑CONFIGURABLE SETTINGS ★★★
-AANTAL_AFLEVERINGEN = 2          # how many episodes to retain
+AANTAL_AFLEVERINGEN = 2          # how many episodes to retain (newest first)
 AANTAL_MINUTEN    = "02:00:00"   # preview length per episode (HH:MM:SS)
 # ----------------------------------------------------------------------
 
@@ -239,11 +229,11 @@ def format_date(upload_date_str):
 
 
 def build_rss(items):
-    """Build RSS feed with iTunes namespace."""
+    """Build RSS feed with iTunes namespace – feed title changed to “Triple J House Party Local”. """
     rss = Element("rss", version="2.0")
     rss.set("xmlns:itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
     ch = SubElement(rss, "channel")
-    SubElement(ch, "title").text = "Triple J House Party"
+    SubElement(ch, "title").text = "Triple J House Party Local"   # <-- changed here
     SubElement(ch, "link").text = BASE_URL
     SubElement(ch, "description").text = "Triple J House Party DJ mix show"
     SubElement(ch, "language").text = "en-au"
@@ -311,9 +301,8 @@ if __name__ == "__main__":
         presenter_name = info["presenter_name"]
         presenter_url = info["presenter_url"]
         if presenter_name:
-            presenter_part = (
-                f"[{presenter_name}]({presenter_url})" if presenter_url else presenter_name
-            )
+            # Presenter name only – no URL inside the title
+            presenter_part = f"[{presenter_name}]"
         else:
             presenter_part = ""
 
@@ -335,7 +324,7 @@ if __name__ == "__main__":
         # Enclosure URL points to the MP3 served by GitHub Pages
         audio_url_for_feed = f"https://mrsjonnie.github.io/houseparty-feed/mp3/{mp3_filename}"
 
-        # Build title: <date> – House Party [Presenter](URL)
+        # Build title: <date> – House Party [Presenter]   (URL NOT inside title)
         parts = []
         if date_str:
             parts.append(date_str)
