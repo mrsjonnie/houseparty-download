@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
 House Party podcast generator – split into 1‑hour MP3 parts, 192 kbps.
+Keeps the newest AANTAL_AFLEVERINGEN episodes (each split into hour parts).
 Feed title: "Triple J House Party Local"
-Episode title format (no URL inside the title):
+Episode title (no URL inside):
     "<date> – House Party Part N [Presenter]"
 """
 
@@ -14,7 +15,7 @@ import requests
 
 # ----------------------------------------------------------------------
 # ★★★ USER‑CONFIGURABLE SETTINGS ★★★
-AANTAL_AFLEVERINGEN = 5          # how many MP3 parts (hour‑chunks) to retain
+AANTAL_AFLEVERINGEN = 2          # how many **episodes** to retain (newest first)
 AANTAL_MINUTEN    = "03:00:00"   # total length to capture per episode (HH:MM:SS), max 03:00:00
 # ----------------------------------------------------------------------
 
@@ -231,46 +232,55 @@ def build_rss(items):
     # Optional iTunes tags (feel free to keep or remove)
     SubElement(ch, "itunes:author").text = "Triple J"
     SubElement(ch, "itunes:summary").text = (
-        "House Party preview feed – first 2 hours split into 1‑hour MP3 parts."
+        "House Party preview feed – first 3 hours split into 1‑hour MP3 parts."
     )
     SubElement(ch, "itunes:explicit").text = "false"
 
-    for ep in items:
-        it = SubElement(ch, "item")
-        SubElement(it, "title").text = ep["title"]
-        SubElement(it, "link").text = ep["page_url"]
-        SubElement(it, "guid", isPermaLink="false").text = ep["guid"]
-        SubElement(it, "description").text = ep.get("description", "")[:500]
-        if ep.get("date"):
+    for it in items:
+        item = SubElement(ch, "item")
+        SubElement(item, "title").text = it["title"]
+        SubElement(item, "link").text = it["page_url"]
+        SubElement(item, "guid", isPermaLink="false").text = it["guid"]
+        SubElement(item, "description").text = it.get("description", "")[:500]
+        if it.get("date"):
             try:
-                dt = datetime.strptime(ep["date"], "%Y%m%d").replace(tzinfo=timezone.utc)
-                SubElement(it, "pubDate").text = dt.strftime(
+                dt = datetime.strptime(it["date"], "%Y%m%d").replace(tzinfo=timezone.utc)
+                SubElement(item, "pubDate").text = dt.strftime(
                     "%a, %d %b %Y %H:%M:%S +0000"
                 )
             except Exception:
                 pass
-        if ep.get("url"):
-            enc = SubElement(it, "enclosure")
-            enc.set("url", ep["url"])
+        if it.get("url"):
+            enc = SubElement(item, "enclosure")
+            enc.set("url", it["url"])
             enc.set("type", "audio/mpeg")
-            # Use the real file size we stored when creating the item
-            enc.set("length", ep.get("local_size", "0"))
+            enc.set("length", it.get("local_size", "0"))
     return xml.dom.minidom.parseString(
         tostring(rss, encoding="unicode")
     ).toprettyxml(indent="  ")
 
 
-def cleanup_old_mp3s(keep_n=AANTAL_AFLEVERINGEN):
-    """Keep only the newest `keep_n` MP3 files in MP3_DIR; delete the rest."""
+def cleanup_old_mp3s(keep_episode_ids):
+    """
+    Delete MP3 files whose episode ID is NOT in keep_episode_ids.
+    keep_episode_ids is a set of episode IDs (as strings) that should be retained.
+    """
     mp3_files = glob.glob(os.path.join(MP3_DIR, "*.mp3"))
-    # sort by modification time, newest first
-    mp3_files.sort(key=lambda p: os.path.getmtime(p), reverse=True)
-    for old_file in mp3_files[keep_n:]:
-        try:
-            os.remove(old_file)
-            print(f"  Removed old MP3: {os.path.basename(old_file)}")
-        except OSError as e:
-            print(f"  FOUT bij verwijderen {old_file}: {e}")
+    for mp3_path in mp3_files:
+        # extract episode ID from filename like 106556580_h1.mp3
+        fname = os.path.basename(mp3_path)
+        # pattern: <episode_id>_h<N>.mp3
+        m = re.match(r"(\d+)_h\d+\.mp3", fname)
+        if not m:
+            # unexpected name – keep it just in case
+            continue
+        episode_id = m.group(1)
+        if episode_id not in keep_episode_ids:
+            try:
+                os.remove(mp3_path)
+                print(f"  Removed old MP3: {fname}")
+            except OSError as e:
+                print(f"  FOUT bij verwijderen {fname}: {e}")
 
 
 # ----------------------------------------------------------------------
@@ -285,7 +295,9 @@ if __name__ == "__main__":
             print("FOUT: Kon geen afleveringen vinden – eindigt.")
             sys.exit(1)
 
-    data = []
+    data = []                     # each element → one <item> in the feed
+    processed_episode_ids = []    # newest first, as we iterate
+
     total_seconds_requested = parse_hms_to_seconds(AANTAL_MINUTEN)
     total_seconds_requested = min(total_seconds_requested, 3 * 3600)  # max 3 h
 
@@ -310,20 +322,19 @@ if __name__ == "__main__":
             continue
         num_chunks = min(3, math.ceil(total_seconds_requested / 3600))
 
+        # extract episode ID for later cleanup
+        m = re.search(r"/house-party/(\d+)", url)
+        episode_id = m.group(1) if m else url.split("/")[-1]
+        processed_episode_ids.append(episode_id)
+
         for chunk_idx in range(num_chunks):
             start_sec = chunk_idx * 3600
             remaining = total_seconds_requested - start_sec
             duration_sec = min(3600, remaining)
 
-            m = re.search(r"/house-party/(\d+)", url)
-            episode_id = m.group(1) if m else url.split("/")[-1]
             mp3_filename = f"{episode_id}_h{chunk_idx + 1}.mp3"
             mp3_path = os.path.join(MP3_DIR, mp3_filename)
 
-            # ffmpeg command:
-            #   -ss after -i  → accurate (though slower) seeking
-            #   -map 0:a?     → take the first audio stream if present
-            #   -headers      → inject a proper User‑Agent so the CDN doesn’t block us
             ffmpeg_cmd = [
                 "ffmpeg",
                 "-y",
@@ -378,11 +389,16 @@ if __name__ == "__main__":
             )
             print(f"  OK: {title}")
 
-        if len(data) >= AANTAL_AFLEVERINGEN:
-            print(f"  MAX {AANTAL_AFLEVERINGEN} MP3‑onderdelen BEREikt – stoppen")
+        # Stop after we have processed enough episodes (newest first)
+        if len(processed_episode_ids) >= AANTAL_AFLEVERINGEN:
+            print(f"  MAX {AANTAL_AFLEVERINGEN} AFLEVERINGEN BEREikt – stoppen")
             break
 
-    cleanup_old_mp3s()
+    # Determine which episode IDs to keep (the newest AANTAL_AFLEVERINGEN)
+    keep_episode_ids = set(processed_episode_ids[:AANTAL_AFLEVERINGEN])
+
+    # Remove MP3 files belonging to older episodes
+    cleanup_old_mp3s(keep_episode_ids)
 
     print(f"Feed bouwen met {len(data)} MP3‑onderdelen …")
     with open("docs/feed.xml", "w", encoding="utf-8") as f:
