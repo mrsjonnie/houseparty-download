@@ -26,7 +26,7 @@ import requests
 # ----------------------------------------------------------------------
 # ★★★ USER‑CONFIGURABLE SETTINGS ★★★
 AANTAL_AFLEVERINGEN = 2          # how many episodes to retain
-AANTAL_MINUTEN    = "00:02:00"   # preview length per episode (HH:MM:SS)
+AANTAL_MINUTEN    = "02:00:00"   # preview length per episode (HH:MM:SS)
 # ----------------------------------------------------------------------
 
 BASE_URL = "https://www.abc.net.au/triplej/programs/house-party"
