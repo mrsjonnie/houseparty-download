@@ -29,6 +29,7 @@ os.makedirs(MP3_DIR, exist_ok=True)
 
 # ----------------------------------------------------------------------
 def parse_hms_to_seconds(hms: str) -> int:
+    """Convert HH:MM:SS (or MM:SS) to total seconds."""
     parts = hms.strip().split(":")
     if len(parts) == 3:
         h, m, s = map(int, parts)
@@ -40,6 +41,7 @@ def parse_hms_to_seconds(hms: str) -> int:
 
 
 def get_episode_urls_from_api():
+    """Try to fetch episode URLs from the ABC collection API (may return 403)."""
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                       "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -57,6 +59,7 @@ def get_episode_urls_from_api():
                     if url.startswith("/"):
                         url = "https://www.abc.net.au" + url
                     urls.append(url)
+        # deduplicate while keeping order (newest first as returned by API)
         seen = set()
         uniq = []
         for u in urls:
@@ -65,10 +68,11 @@ def get_episode_urls_from_api():
                 uniq.append(u)
         return uniq
     except Exception:
-        return None
+        return None   # signal failure → fall back to scraping
 
 
 def get_episode_urls_from_program_page():
+    """Scrape the program page for episode links (newest first)."""
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                       "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -78,12 +82,13 @@ def get_episode_urls_from_program_page():
         r = requests.get(PROGRAM_PAGE, headers=headers, timeout=15)
         r.raise_for_status()
         html = r.text
+        # Find all <a href="/triplej/programs/house-party/house-party/xxxxxx">
         pattern = r'href="(/triplej/programs/house-party/house-party/\d+)"'
         matches = re.findall(pattern, html)
         urls = []
         for m in matches:
             abs_url = "https://www.abc.net.au" + m
-            if abs_url not in urls:
+            if abs_url not in urls:      # keep first occurrence only (newest first)
                 urls.append(abs_url)
         return urls
     except Exception as e:
@@ -92,6 +97,7 @@ def get_episode_urls_from_program_page():
 
 
 def extract_episode_info(page_url):
+    """Return dict with audio_url, upload_date, presenter_name, presenter_url, title_raw."""
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                       "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -101,6 +107,8 @@ def extract_episode_info(page_url):
         r = requests.get(page_url, headers=headers, timeout=15)
         r.raise_for_status()
         html = r.text
+
+        # --- locate __NEXT_DATA__ JSON ---
         m = re.search(
             r'<script id="__NEXT_DATA__" type="application/json">([^<]+)</script>',
             html,
@@ -128,6 +136,7 @@ def extract_episode_info(page_url):
 
         # ----- upload date -----
         upload_date = None
+        # Prefer meta article:published_time (ISO 8601)
         meta_date = re.search(
             r'<meta[^>]+property=["\']article:published_time["\'][^>]+content=["\']([^"\']+)',
             html,
@@ -140,6 +149,7 @@ def extract_episode_info(page_url):
                 if doc.get(key):
                     upload_date = str(doc[key])[:10].replace("-", "")
                     break
+            # Last resort: scan JSON for any YYYYMMDD string
             if not upload_date:
                 def find_date(obj):
                     if isinstance(obj, dict):
@@ -197,6 +207,7 @@ def extract_episode_info(page_url):
 
 
 def format_date(upload_date_str):
+    """Convert YYYYMMDD → 'Sat 17 Apr 2026 at 8:00am' (fixed 08:00 am)."""
     try:
         dt = datetime.strptime(upload_date_str, "%Y%m%d").replace(tzinfo=timezone.utc)
         day_name = dt.strftime("%a")
@@ -209,6 +220,7 @@ def format_date(upload_date_str):
 
 
 def build_rss(items):
+    """Build RSS feed with iTunes namespace – feed title = “Triple J House Party Local”."""
     rss = Element("rss", version="2.0")
     rss.set("xmlns:itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
     ch = SubElement(rss, "channel")
@@ -241,20 +253,17 @@ def build_rss(items):
             enc = SubElement(it, "enclosure")
             enc.set("url", ep["url"])
             enc.set("type", "audio/mpeg")
-            # ---- REAL FILE SIZE ----
-            # ep["url"] is the MP3 URL served by GitHub Pages; the file exists locally
-            # in mp3_path, which we stored in ep["local_path"] when building the item.
-            # For simplicity we retrieve the size from the local file we just created.
-            # We'll add a temporary key later; if missing we fall back to 0.
-            length = ep.get("local_size", "0")
-            enc.set("length", length)
+            # Use the real file size we stored when creating the item
+            enc.set("length", ep.get("local_size", "0"))
     return xml.dom.minidom.parseString(
         tostring(rss, encoding="unicode")
     ).toprettyxml(indent="  ")
 
 
 def cleanup_old_mp3s(keep_n=AANTAL_AFLEVERINGEN):
+    """Keep only the newest `keep_n` MP3 files in MP3_DIR; delete the rest."""
     mp3_files = glob.glob(os.path.join(MP3_DIR, "*.mp3"))
+    # sort by modification time, newest first
     mp3_files.sort(key=lambda p: os.path.getmtime(p), reverse=True)
     for old_file in mp3_files[keep_n:]:
         try:
@@ -311,26 +320,34 @@ if __name__ == "__main__":
             mp3_filename = f"{episode_id}_h{chunk_idx + 1}.mp3"
             mp3_path = os.path.join(MP3_DIR, mp3_filename)
 
+            # ffmpeg command:
+            #   -ss after -i  → accurate (though slower) seeking
+            #   -map 0:a?     → take the first audio stream if present
+            #   -headers      → inject a proper User‑Agent so the CDN doesn’t block us
             ffmpeg_cmd = [
                 "ffmpeg",
                 "-y",
-                "-ss", str(start_sec),
                 "-i", audio_url,
+                "-ss", str(start_sec),
                 "-t", str(duration_sec),
+                "-map", "0:a?",
                 "-c:a", "libmp3lame",
                 "-b:a", "192k",
                 "-write_xing", "1",
+                "-avoid_negative_ts", "make_zero",
+                "-headers", "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
                 mp3_path,
             ]
             print(f"  Converteren chunk {chunk_idx+1}/{num_chunks} ({start_sec}s–{start_sec+duration_sec}s) → MP3 …")
-            ok = subprocess.run(ffmpeg_cmd, capture_output=True, text=True).returncode == 0
-            if not ok:
-                print(f"  FOUT bij ffmpeg conversie voor chunk {chunk_idx+1}")
+            result = subprocess.run(ffmpeg_cmd, capture_output=True, text=True)
+            if result.returncode != 0:
+                print(f"  FOUT bij ffmpeg conversie voor chunk {chunk_idx+1}:")
+                print(result.stderr[:500])
                 continue
             else:
                 print(f"  MP3 klaar: {mp3_filename}")
 
-            # Enclosure URL – **use the GitHub Pages URL for the *download* repo**
+            # Enclosure URL – must point to the GitHub Pages URL of the *download* repo
             audio_url_for_feed = (
                 f"https://mrsjonnie.github.io/houseparty-download/mp3/{mp3_filename}"
             )
