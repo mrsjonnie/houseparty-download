@@ -3,7 +3,7 @@ name: Generate Triple J House Party RSS Feed
 on:
   schedule:
     # Run every Saturday at 06:00 UTC (08:00 CEST / 07:00 CET)
-    - cron: '0 6 * * 6'
+    - cron: '0 12 * * 6'
   workflow_dispatch:   # allow manual runs as well
 
 jobs:
