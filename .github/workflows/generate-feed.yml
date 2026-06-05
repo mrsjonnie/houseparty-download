@@ -2,75 +2,53 @@ name: Generate Triple J House Party RSS Feed
 
 on:
   schedule:
-    # Run every Saturday at 06:00 UTC (08:00 CEST / 07:00 CET)
     - cron: '0 6 * * 6'
-  workflow_dispatch:   # allow manual runs as well
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Give the job permission to push to the repo
     permissions:
-      contents: write   # needed to push commits
+      contents: write
 
     steps:
-      # 1️ Checkout the repo (default persists credentials)
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          # persist-credentials: true   # default, can be omitted
 
-      # 2️ Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      # 3️ Install system dependencies (ffmpeg)
       - name: Install ffmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      # 4️ Install Python dependencies (only requests is needed)
       - name: Install Python deps
         run: |
           python -m pip install --upgrade pip
           pip install requests
 
-      # 5️ Run the feed generator
       - name: Generate feed & MP3s
         run: |
           python generate_feed.py
 
-      # 6️ Configure git for committing back
+      - name: Remove old MP3 files
+        run: |
+          find docs/mp3/ -name "*.mp3" -type f -mtime +14 -delete
+
       - name: Configure git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-      # 7 Run the feed generator
-      - name: Generate feed & MP3s
-        run: python generate_feed.py
-        
-      # 8 Remove old MP3 files older than 2 weeks
-      - name: Remove old MP3 files
-      run:  find docs/mp3/ -name "*.mp3" -type f -mtime +14 -delete
-      
-      # 9 Configure git for committing back
-      - name: Configure git
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.c
 
-
-      # 10 Set remote URL with token so push works
       - name: Set remote URL for push
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
-      # 11 Commit & push any new/updated files (feed.xml + MP3s)
       - name: Commit changes
         run: |
           git add docs/feed.xml docs/mp3/*.mp3 || true
