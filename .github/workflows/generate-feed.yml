@@ -49,13 +49,28 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+      # 7 Run the feed generator
+      - name: Generate feed & MP3s
+        run: python generate_feed.py
+        
+      # 8 Remove old MP3 files older than 2 weeks
+      - name: Remove old MP3 files
+      run:  find docs/mp3/ -name "*.mp3" -type f -mtime +14 -delete
+      
+      # 9 Configure git for committing back
+      - name: Configure git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.c
 
-      # 7️⃣ Set remote URL with token so push works
+
+      # 10 Set remote URL with token so push works
       - name: Set remote URL for push
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
-      # 8️⃣ Commit & push any new/updated files (feed.xml + MP3s)
+      # 11 Commit & push any new/updated files (feed.xml + MP3s)
       - name: Commit changes
         run: |
           git add docs/feed.xml docs/mp3/*.mp3 || true
