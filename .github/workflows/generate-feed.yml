@@ -14,37 +14,37 @@ jobs:
       contents: write   # needed to push commits
 
     steps:
-      # 1️⃣ Checkout the repo (default persists credentials)
+      # 1️ Checkout the repo (default persists credentials)
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           # persist-credentials: true   # default, can be omitted
 
-      # 2️⃣ Set up Python
+      # 2️ Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      # 3️⃣ Install system dependencies (ffmpeg)
+      # 3️ Install system dependencies (ffmpeg)
       - name: Install ffmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      # 4️⃣ Install Python dependencies (only requests is needed)
+      # 4️ Install Python dependencies (only requests is needed)
       - name: Install Python deps
         run: |
           python -m pip install --upgrade pip
           pip install requests
 
-      # 5️⃣ Run the feed generator
+      # 5️ Run the feed generator
       - name: Generate feed & MP3s
         run: |
           python generate_feed.py
 
-      # 6️⃣ Configure git for committing back
+      # 6️ Configure git for committing back
       - name: Configure git
         run: |
           git config user.name "github-actions[bot]"
