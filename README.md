@@ -1,6 +1,6 @@
 Triple J House Party RSS Feed
 Automatisch gegenereerde RSS-feed voor de Triple J House Party show.
-GitHub Actions draait elke vrijdag- en zaterdagnacht automatisch een Python script dat:
+GitHub Actions draait elke zaterdag automatisch een Python script dat:
 De Triple J House Party-pagina scrapet op nieuwe afleveringen
 De directe audio-URL per aflevering ophaalt via `yt-dlp`
 Een RSS-feed (`docs/feed.xml`) genereert die door Lyrion (of elke podcast-app) gelezen kan worden
