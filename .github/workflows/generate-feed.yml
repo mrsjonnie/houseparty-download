@@ -1,8 +1,7 @@
-name: Generate Triple J RSS, OPML and MP3 files
+name: Generate Triple J RSS, OPML and M3U files
 
 on:
   schedule:
-    # Elke zaterdag om 06:00 UTC (08:00 Nederlandse zomertijd).
     - cron: "0 6 * * 6"
   workflow_dispatch:
 
@@ -56,7 +55,7 @@ jobs:
         run: |
           git add -A docs
           if ! git diff --cached --quiet; then
-            git commit -m "Update Triple J RSS, OPML, playlists and MP3s $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git commit -m "Update Triple J RSS, OPML, M3U and MP3 files $(date -u '+%Y-%m-%d %H:%M UTC')"
             git push origin HEAD:${{ github.ref_name }}
           else
             echo "No changes to commit"
