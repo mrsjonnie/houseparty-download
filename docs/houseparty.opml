@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>House Party – nieuwste uitzending</title>
+    <cachetime>60</cachetime>
+    <forceRefresh>1</forceRefresh>
+  </head>
+  <body>
+    <outline
+      text="House Party – uur 1"
+      type="audio"
+      duration="3600"
+      url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur1.mp3" />
+
+    <outline
+      text="House Party – uur 2"
+      type="audio"
+      duration="3600"
+      url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur2.mp3" />
+
+    <outline
+      text="House Party – uur 3"
+      type="audio"
+      duration="3600"
+      url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur3.mp3" />
+  </body>
+</opml>
