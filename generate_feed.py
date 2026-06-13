@@ -6,29 +6,23 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 import xml.dom.minidom
 import requests
 
-AANTAL_AFLEVERINGEN = 2
 AANTAL_MINUTEN = "03:00:00"
 
-BASE_URL = "https://www.abc.net.au/triplej/programs/house-party"
-PROGRAM_PAGE = BASE_URL
-COLLECTION_API = (
-    "https://api.abc.net.au/v2/page/collection?"
-    "path=/triplej/programs/house-party&size=20"
-)
+PROGRAMS = [
+    {
+        "name": "House Party",
+        "slug": "house-party",
+        "aantal_afleveringen": 2,
+    },
+    {
+        "name": "Doof",
+        "slug": "doof",
+        "aantal_afleveringen": 1,
+    },
+]
 
 MP3_DIR = "docs/mp3"
 os.makedirs(MP3_DIR, exist_ok=True)
-
-
-def parse_hms_to_seconds(hms):
-    parts = hms.strip().split(":")
-    if len(parts) == 3:
-        h, m, s = map(int, parts)
-        return h * 3600 + m * 60 + s
-    if len(parts) == 2:
-        m, s = map(int, parts)
-        return m * 60 + s
-    return int(parts[0])
 
 
 def headers():
@@ -41,9 +35,20 @@ def headers():
     }
 
 
-def get_episode_urls_from_api():
+def parse_hms_to_seconds(hms):
+    h, m, s = map(int, hms.split(":"))
+    return h * 3600 + m * 60 + s
+
+
+def get_episode_urls(slug):
+    program_page = f"https://www.abc.net.au/triplej/programs/{slug}"
+    api_url = (
+        "https://api.abc.net.au/v2/page/collection?"
+        f"path=/triplej/programs/{slug}&size=20"
+    )
+
     try:
-        r = requests.get(COLLECTION_API, headers=headers(), timeout=15)
+        r = requests.get(api_url, headers=headers(), timeout=15)
         r.raise_for_status()
         data = r.json()
 
@@ -51,24 +56,23 @@ def get_episode_urls_from_api():
         for block in data.get("blocks", []):
             for promo in block.get("promos", []):
                 url = promo.get("url")
-                if url and "/house-party/" in url:
+                if url and f"/{slug}/" in url:
                     if url.startswith("/"):
                         url = "https://www.abc.net.au" + url
                     if url not in urls:
                         urls.append(url)
 
-        return urls
+        if urls:
+            return urls
     except Exception:
-        return None
+        pass
 
-
-def get_episode_urls_from_program_page():
     try:
-        r = requests.get(PROGRAM_PAGE, headers=headers(), timeout=15)
+        r = requests.get(program_page, headers=headers(), timeout=15)
         r.raise_for_status()
 
         matches = re.findall(
-            r'href="(/triplej/programs/house-party/house-party/\d+)"',
+            rf'href="(/triplej/programs/{re.escape(slug)}/{re.escape(slug)}/\d+)"',
             r.text,
         )
 
@@ -80,7 +84,7 @@ def get_episode_urls_from_program_page():
 
         return urls
     except Exception as e:
-        print(f"FOUT bij ophalen programmapiagina: {e}")
+        print(f"FOUT bij ophalen {slug}: {e}")
         return []
 
 
@@ -163,12 +167,12 @@ def build_rss(items):
     rss.set("xmlns:itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
 
     ch = SubElement(rss, "channel")
-    SubElement(ch, "title").text = "Triple J House Party Local"
-    SubElement(ch, "link").text = BASE_URL
-    SubElement(ch, "description").text = "Triple J House Party DJ mix show"
+    SubElement(ch, "title").text = "Triple J Local"
+    SubElement(ch, "link").text = "https://www.abc.net.au/triplej/programs"
+    SubElement(ch, "description").text = "Triple J local MP3 feed"
     SubElement(ch, "language").text = "en-au"
     SubElement(ch, "itunes:author").text = "Triple J"
-    SubElement(ch, "itunes:summary").text = "House Party feed split into 1-hour MP3 parts."
+    SubElement(ch, "itunes:summary").text = "Triple J shows split into 1-hour MP3 parts."
     SubElement(ch, "itunes:explicit").text = "false"
 
     for it in items:
@@ -197,21 +201,17 @@ def build_rss(items):
     ).toprettyxml(indent="  ")
 
 
-def cleanup_old_mp3s(keep_episode_ids):
-    """
-    Verwijder alle MP3's die niet horen bij de nieuwste afleveringen.
-    """
-
+def cleanup_old_mp3s(keep_prefixes):
     for mp3_path in glob.glob(os.path.join(MP3_DIR, "*.mp3")):
         fname = os.path.basename(mp3_path)
 
-        m = re.match(r"(\d+)_uur\d+\.mp3", fname)
-        if not m:
-            continue
+        keep = False
+        for prefix in keep_prefixes:
+            if fname.startswith(prefix + "_uur"):
+                keep = True
+                break
 
-        episode_id = m.group(1)
-
-        if episode_id not in keep_episode_ids:
+        if not keep:
             try:
                 os.remove(mp3_path)
                 print(f"Verwijderd: {fname}")
@@ -222,117 +222,115 @@ def cleanup_old_mp3s(keep_episode_ids):
 if __name__ == "__main__":
     os.makedirs("docs", exist_ok=True)
 
-    print("Ophalen afleveringenlijst...")
-    episode_urls = get_episode_urls_from_api()
-
-    if episode_urls is None:
-        print("API blokkeert mogelijk, programmapiagina scrapen...")
-        episode_urls = get_episode_urls_from_program_page()
-
-    if not episode_urls:
-        print("FOUT: geen afleveringen gevonden.")
-        sys.exit(1)
-
     data = []
-    processed_count = 0
-    keep_episode_ids = []
+    keep_prefixes = []
 
     total_seconds_requested = min(
         parse_hms_to_seconds(AANTAL_MINUTEN),
         3 * 3600,
     )
 
-    for url in episode_urls:
-        if processed_count >= AANTAL_AFLEVERINGEN:
-            break
+    for program in PROGRAMS:
+        slug = program["slug"]
+        name = program["name"]
+        aantal = program["aantal_afleveringen"]
 
-        print(f"Verwerken: {url}")
-        info = extract_episode_info(url)
+        print(f"Ophalen afleveringenlijst voor {name}...")
+        episode_urls = get_episode_urls(slug)
 
-        if not info or not info.get("audio_url"):
-            print("Overgeslagen: geen audio-info")
+        if not episode_urls:
+            print(f"Geen afleveringen gevonden voor {name}")
             continue
 
-        m = re.search(r"/house-party/(\d+)", url)
-        episode_id = m.group(1) if m else url.rstrip("/").split("/")[-1]
-        keep_episode_ids.append(episode_id)
+        processed_count = 0
 
-        audio_url = info["audio_url"]
-        upload_date = info["upload_date"]
-        date_str = format_date(upload_date) if upload_date else ""
-        presenter = info["presenter_name"]
+        for url in episode_urls:
+            if processed_count >= aantal:
+                break
 
-        num_chunks = min(3, math.ceil(total_seconds_requested / 3600))
+            print(f"Verwerken {name}: {url}")
+            info = extract_episode_info(url)
 
-        for chunk_idx in range(num_chunks):
-            start_sec = chunk_idx * 3600
-            duration_sec = min(3600, total_seconds_requested - start_sec)
-
-            if duration_sec <= 0:
+            if not info or not info.get("audio_url"):
+                print("Overgeslagen: geen audio-info")
                 continue
 
-            uur_nummer = chunk_idx + 1
-            mp3_filename = f"{episode_id}_uur{uur_nummer}.mp3"
-            mp3_path = os.path.join(MP3_DIR, mp3_filename)
+            m = re.search(rf"/{re.escape(slug)}/(\d+)", url)
+            episode_id = m.group(1) if m else url.rstrip("/").split("/")[-1]
 
-            ffmpeg_cmd = [
-                "ffmpeg",
-                "-y",
-                "-ss", str(start_sec),
-                "-i", audio_url,
-                "-t", str(duration_sec),
-                "-map", "0:a?",
-                "-c:a", "libmp3lame",
-                "-b:a", "192k",
-                "-write_xing", "1",
-                "-avoid_negative_ts", "make_zero",
-                "-headers", (
-                    "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                    "AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/124.0.0.0 Safari/537.36"
-                ),
-                mp3_path,
-            ]
+            file_prefix = f"{slug}_{episode_id}"
+            keep_prefixes.append(file_prefix)
 
-            print(
-                f"Converteren uur {uur_nummer}: "
-                f"{start_sec}s tot {start_sec + duration_sec}s"
-            )
+            audio_url = info["audio_url"]
+            upload_date = info["upload_date"]
+            date_str = format_date(upload_date) if upload_date else ""
+            presenter = info["presenter_name"]
 
-            result = subprocess.run(ffmpeg_cmd, capture_output=True, text=True)
+            num_chunks = min(3, math.ceil(total_seconds_requested / 3600))
 
-            if result.returncode != 0:
-                print(f"FOUT bij ffmpeg voor uur {uur_nummer}:")
-                print(result.stderr[:500])
-                continue
+            for chunk_idx in range(num_chunks):
+                start_sec = chunk_idx * 3600
+                duration_sec = min(3600, total_seconds_requested - start_sec)
 
-            audio_url_for_feed = (
-                f"https://mrsjonnie.github.io/houseparty-download/mp3/{mp3_filename}"
-            )
+                if duration_sec <= 0:
+                    continue
 
-            title_parts = []
-            if date_str:
-                title_parts.append(date_str)
-            title_parts.append(f"– House Party uur {uur_nummer}")
-            if presenter:
-                title_parts.append(f"[{presenter}]")
+                uur_nummer = chunk_idx + 1
+                mp3_filename = f"{file_prefix}_uur{uur_nummer}.mp3"
+                mp3_path = os.path.join(MP3_DIR, mp3_filename)
 
-            title = " ".join(title_parts)
+                ffmpeg_cmd = [
+                    "ffmpeg",
+                    "-y",
+                    "-ss", str(start_sec),
+                    "-i", audio_url,
+                    "-t", str(duration_sec),
+                    "-map", "0:a?",
+                    "-c:a", "libmp3lame",
+                    "-b:a", "192k",
+                    "-write_xing", "1",
+                    "-avoid_negative_ts", "make_zero",
+                    "-headers", (
+                        "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/124.0.0.0 Safari/537.36"
+                    ),
+                    mp3_path,
+                ]
 
-            data.append({
-                "title": title,
-                "url": audio_url_for_feed,
-                "page_url": url,
-                "guid": f"{url}#uur{uur_nummer}",
-                "date": upload_date,
-                "local_size": str(os.path.getsize(mp3_path)),
-            })
+                print(f"Converteren {name} uur {uur_nummer}")
+                result = subprocess.run(ffmpeg_cmd, capture_output=True, text=True)
 
-            print(f"OK: {mp3_filename}")
+                if result.returncode != 0:
+                    print(f"FOUT bij ffmpeg voor {name} uur {uur_nummer}:")
+                    print(result.stderr[:500])
+                    continue
 
-        processed_count += 1
+                audio_url_for_feed = (
+                    f"https://mrsjonnie.github.io/houseparty-download/mp3/{mp3_filename}"
+                )
 
-    cleanup_old_mp3s(set(keep_episode_ids))
+                title_parts = []
+                if date_str:
+                    title_parts.append(date_str)
+                title_parts.append(f"– {name} uur {uur_nummer}")
+                if presenter:
+                    title_parts.append(f"[{presenter}]")
+
+                data.append({
+                    "title": " ".join(title_parts),
+                    "url": audio_url_for_feed,
+                    "page_url": url,
+                    "guid": f"{url}#uur{uur_nummer}",
+                    "date": upload_date,
+                    "local_size": str(os.path.getsize(mp3_path)),
+                })
+
+                print(f"OK: {mp3_filename}")
+
+            processed_count += 1
+
+    cleanup_old_mp3s(set(keep_prefixes))
 
     print(f"Feed bouwen met {len(data)} onderdelen...")
     with open("docs/feed.xml", "w", encoding="utf-8") as f:
