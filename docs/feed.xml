@@ -6,55 +6,55 @@
     <description>Triple J House Party DJ mix show</description>
     <language>en-au</language>
     <itunes:author>Triple J</itunes:author>
-    <itunes:summary>House Party preview feed – first 3 hours split into 1‑hour MP3 parts.</itunes:summary>
+    <itunes:summary>House Party feed split into 1-hour MP3 parts.</itunes:summary>
     <itunes:explicit>false</itunes:explicit>
     <item>
-      <title>Fri 12 Jun 2026 at 8:00am – House Party Part 1 [Shantan Wantan Ichiban]</title>
+      <title>Sat 13 Jun 2026 at 8:00am – House Party uur 1 [Latifa Tee]</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106770444</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106770444#uur1</guid>
+      <description/>
+      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106770444_uur1.mp3" type="audio/mpeg" length="86401197"/>
+    </item>
+    <item>
+      <title>Sat 13 Jun 2026 at 8:00am – House Party uur 2 [Latifa Tee]</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106770444</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106770444#uur2</guid>
+      <description/>
+      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106770444_uur2.mp3" type="audio/mpeg" length="86401197"/>
+    </item>
+    <item>
+      <title>Sat 13 Jun 2026 at 8:00am – House Party uur 3 [Latifa Tee]</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106770444</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106770444#uur3</guid>
+      <description/>
+      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106770444_uur3.mp3" type="audio/mpeg" length="86401197"/>
+    </item>
+    <item>
+      <title>Fri 12 Jun 2026 at 8:00am – House Party uur 1 [Shantan Wantan Ichiban]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#part1</guid>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur1</guid>
       <description/>
       <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106768662_h1.mp3" type="audio/mpeg" length="86401197"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106768662_uur1.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
-      <title>Fri 12 Jun 2026 at 8:00am – House Party Part 2 [Shantan Wantan Ichiban]</title>
+      <title>Fri 12 Jun 2026 at 8:00am – House Party uur 2 [Shantan Wantan Ichiban]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#part2</guid>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur2</guid>
       <description/>
       <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106768662_h2.mp3" type="audio/mpeg" length="86401197"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106768662_uur2.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
-      <title>Fri 12 Jun 2026 at 8:00am – House Party Part 3 [Shantan Wantan Ichiban]</title>
+      <title>Fri 12 Jun 2026 at 8:00am – House Party uur 3 [Shantan Wantan Ichiban]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#part3</guid>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur3</guid>
       <description/>
       <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106768662_h3.mp3" type="audio/mpeg" length="86401197"/>
-    </item>
-    <item>
-      <title>Sat 6 Jun 2026 at 8:00am – House Party Part 1 [Latifa Tee]</title>
-      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106743036</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106743036#part1</guid>
-      <description/>
-      <pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106743036_h1.mp3" type="audio/mpeg" length="86401197"/>
-    </item>
-    <item>
-      <title>Sat 6 Jun 2026 at 8:00am – House Party Part 2 [Latifa Tee]</title>
-      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106743036</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106743036#part2</guid>
-      <description/>
-      <pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106743036_h2.mp3" type="audio/mpeg" length="86401197"/>
-    </item>
-    <item>
-      <title>Sat 6 Jun 2026 at 8:00am – House Party Part 3 [Latifa Tee]</title>
-      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106743036</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106743036#part3</guid>
-      <description/>
-      <pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106743036_h3.mp3" type="audio/mpeg" length="86401197"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106768662_uur3.mp3" type="audio/mpeg" length="86401197"/>
     </item>
   </channel>
 </rss>
