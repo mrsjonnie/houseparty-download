@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
   <channel>
-    <title>Triple J House Party &amp; Doof – privéfeed</title>
+    <title>Triple J-programma's – privéfeed</title>
     <link>https://www.abc.net.au/triplej/programs</link>
-    <description>Persoonlijke RSS-feed met House Party en Doof, verdeeld in delen van één uur.</description>
+    <description>Persoonlijke feed met geselecteerde Triple J-programma's, verdeeld in delen van maximaal één uur.</description>
     <language>en-au</language>
     <generator>houseparty-download</generator>
     <ttl>60</ttl>
     <atom:link href="https://mrsjonnie.github.io/houseparty-download/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Sat, 13 Jun 2026 19:12:41 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 13 Jun 2026 21:08:05 +0000</lastBuildDate>
     <itunes:author>Persoonlijke feed</itunes:author>
     <itunes:type>episodic</itunes:type>
-    <itunes:summary>House Party en Doof, verdeeld in delen van één uur.</itunes:summary>
+    <itunes:summary>Geselecteerde Triple J-programma's in delen van maximaal één uur.</itunes:summary>
     <itunes:explicit>false</itunes:explicit>
     <itunes:block>yes</itunes:block>
     <itunes:category text="Music"/>
@@ -19,8 +19,8 @@
       <title>Sat 13 Jun 2026 – House Party – uur 1 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106770444</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106770444#uur1</guid>
-      <description>House Party, deel 1. Bron: ABC Triple J.</description>
-      <itunes:summary>House Party, deel 1. Bron: ABC Triple J.</itunes:summary>
+      <description>Sat 13 Jun 2026 – House Party – uur 1 [Latifa Tee]. Originele aflevering: House Party. Bron: ABC Triple J.</description>
+      <itunes:summary>Sat 13 Jun 2026 – House Party – uur 1 [Latifa Tee]. Originele aflevering: House Party. Bron: ABC Triple J.</itunes:summary>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
       <itunes:duration>01:00:00</itunes:duration>
@@ -31,32 +31,32 @@
       <title>Sat 13 Jun 2026 – House Party – uur 2 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106770444</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106770444#uur2</guid>
-      <description>House Party, deel 2. Bron: ABC Triple J.</description>
-      <itunes:summary>House Party, deel 2. Bron: ABC Triple J.</itunes:summary>
+      <description>Sat 13 Jun 2026 – House Party – uur 2 [Latifa Tee]. Originele aflevering: House Party. Bron: ABC Triple J.</description>
+      <itunes:summary>Sat 13 Jun 2026 – House Party – uur 2 [Latifa Tee]. Originele aflevering: House Party. Bron: ABC Triple J.</itunes:summary>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
       <itunes:duration>01:00:00</itunes:duration>
-      <pubDate>Sat, 13 Jun 2026 08:00:00 +0000</pubDate>
+      <pubDate>Sat, 13 Jun 2026 08:00:01 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur2.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
       <title>Sat 13 Jun 2026 – House Party – uur 3 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106770444</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106770444#uur3</guid>
-      <description>House Party, deel 3. Bron: ABC Triple J.</description>
-      <itunes:summary>House Party, deel 3. Bron: ABC Triple J.</itunes:summary>
+      <description>Sat 13 Jun 2026 – House Party – uur 3 [Latifa Tee]. Originele aflevering: House Party. Bron: ABC Triple J.</description>
+      <itunes:summary>Sat 13 Jun 2026 – House Party – uur 3 [Latifa Tee]. Originele aflevering: House Party. Bron: ABC Triple J.</itunes:summary>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
       <itunes:duration>01:00:00</itunes:duration>
-      <pubDate>Sat, 13 Jun 2026 08:00:00 +0000</pubDate>
+      <pubDate>Sat, 13 Jun 2026 08:00:02 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur3.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
       <title>Fri 12 Jun 2026 – Doof – uur 1 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/doof/doof/106768656</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/doof/doof/106768656#uur1</guid>
-      <description>Doof, deel 1. Bron: ABC Triple J.</description>
-      <itunes:summary>Doof, deel 1. Bron: ABC Triple J.</itunes:summary>
+      <description>Fri 12 Jun 2026 – Doof – uur 1 [Latifa Tee]. Originele aflevering: Doof. Bron: ABC Triple J.</description>
+      <itunes:summary>Fri 12 Jun 2026 – Doof – uur 1 [Latifa Tee]. Originele aflevering: Doof. Bron: ABC Triple J.</itunes:summary>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
       <itunes:duration>01:00:00</itunes:duration>
@@ -67,32 +67,32 @@
       <title>Fri 12 Jun 2026 – Doof – uur 2 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/doof/doof/106768656</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/doof/doof/106768656#uur2</guid>
-      <description>Doof, deel 2. Bron: ABC Triple J.</description>
-      <itunes:summary>Doof, deel 2. Bron: ABC Triple J.</itunes:summary>
+      <description>Fri 12 Jun 2026 – Doof – uur 2 [Latifa Tee]. Originele aflevering: Doof. Bron: ABC Triple J.</description>
+      <itunes:summary>Fri 12 Jun 2026 – Doof – uur 2 [Latifa Tee]. Originele aflevering: Doof. Bron: ABC Triple J.</itunes:summary>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
       <itunes:duration>01:00:00</itunes:duration>
-      <pubDate>Fri, 12 Jun 2026 12:00:00 +0000</pubDate>
+      <pubDate>Fri, 12 Jun 2026 12:00:01 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur2.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
       <title>Fri 12 Jun 2026 – Doof – uur 3 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/doof/doof/106768656</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/doof/doof/106768656#uur3</guid>
-      <description>Doof, deel 3. Bron: ABC Triple J.</description>
-      <itunes:summary>Doof, deel 3. Bron: ABC Triple J.</itunes:summary>
+      <description>Fri 12 Jun 2026 – Doof – uur 3 [Latifa Tee]. Originele aflevering: Doof. Bron: ABC Triple J.</description>
+      <itunes:summary>Fri 12 Jun 2026 – Doof – uur 3 [Latifa Tee]. Originele aflevering: Doof. Bron: ABC Triple J.</itunes:summary>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
       <itunes:duration>01:00:00</itunes:duration>
-      <pubDate>Fri, 12 Jun 2026 12:00:00 +0000</pubDate>
+      <pubDate>Fri, 12 Jun 2026 12:00:02 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur3.mp3" type="audio/mpeg" length="86391405"/>
     </item>
     <item>
       <title>Fri 12 Jun 2026 – House Party – uur 1 [Shantan Wantan Ichiban]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur1</guid>
-      <description>House Party, deel 1. Bron: ABC Triple J.</description>
-      <itunes:summary>House Party, deel 1. Bron: ABC Triple J.</itunes:summary>
+      <description>Fri 12 Jun 2026 – House Party – uur 1 [Shantan Wantan Ichiban]. Originele aflevering: House Party. Bron: ABC Triple J.</description>
+      <itunes:summary>Fri 12 Jun 2026 – House Party – uur 1 [Shantan Wantan Ichiban]. Originele aflevering: House Party. Bron: ABC Triple J.</itunes:summary>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
       <itunes:duration>01:00:00</itunes:duration>
@@ -103,24 +103,24 @@
       <title>Fri 12 Jun 2026 – House Party – uur 2 [Shantan Wantan Ichiban]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur2</guid>
-      <description>House Party, deel 2. Bron: ABC Triple J.</description>
-      <itunes:summary>House Party, deel 2. Bron: ABC Triple J.</itunes:summary>
+      <description>Fri 12 Jun 2026 – House Party – uur 2 [Shantan Wantan Ichiban]. Originele aflevering: House Party. Bron: ABC Triple J.</description>
+      <itunes:summary>Fri 12 Jun 2026 – House Party – uur 2 [Shantan Wantan Ichiban]. Originele aflevering: House Party. Bron: ABC Triple J.</itunes:summary>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
       <itunes:duration>01:00:00</itunes:duration>
-      <pubDate>Fri, 12 Jun 2026 08:00:00 +0000</pubDate>
+      <pubDate>Fri, 12 Jun 2026 08:00:01 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur2.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
       <title>Fri 12 Jun 2026 – House Party – uur 3 [Shantan Wantan Ichiban]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur3</guid>
-      <description>House Party, deel 3. Bron: ABC Triple J.</description>
-      <itunes:summary>House Party, deel 3. Bron: ABC Triple J.</itunes:summary>
+      <description>Fri 12 Jun 2026 – House Party – uur 3 [Shantan Wantan Ichiban]. Originele aflevering: House Party. Bron: ABC Triple J.</description>
+      <itunes:summary>Fri 12 Jun 2026 – House Party – uur 3 [Shantan Wantan Ichiban]. Originele aflevering: House Party. Bron: ABC Triple J.</itunes:summary>
       <itunes:explicit>false</itunes:explicit>
       <itunes:episodeType>full</itunes:episodeType>
       <itunes:duration>01:00:00</itunes:duration>
-      <pubDate>Fri, 12 Jun 2026 08:00:00 +0000</pubDate>
+      <pubDate>Fri, 12 Jun 2026 08:00:02 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur3.mp3" type="audio/mpeg" length="86401197"/>
     </item>
   </channel>

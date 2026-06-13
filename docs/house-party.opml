@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<opml version="2.0">
+  <head>
+    <title>House Party – nieuwste uitzending</title>
+    <cachetime>1</cachetime>
+    <forceRefresh>1</forceRefresh>
+  </head>
+  <body>
+    <outline text="Sat 13 Jun 2026 – House Party – uur 1 [Latifa Tee]" title="Sat 13 Jun 2026 – House Party – uur 1 [Latifa Tee]" type="audio" url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur1.mp3" duration="3600" description="House Party"/>
+    <outline text="Sat 13 Jun 2026 – House Party – uur 2 [Latifa Tee]" title="Sat 13 Jun 2026 – House Party – uur 2 [Latifa Tee]" type="audio" url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur2.mp3" duration="3600" description="House Party"/>
+    <outline text="Sat 13 Jun 2026 – House Party – uur 3 [Latifa Tee]" title="Sat 13 Jun 2026 – House Party – uur 3 [Latifa Tee]" type="audio" url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur3.mp3" duration="3600" description="House Party"/>
+  </body>
+</opml>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<opml version="2.0">
+  <head>
+    <title>Start Doof</title>
+    <cachetime>1</cachetime>
+    <forceRefresh>1</forceRefresh>
+  </head>
+  <command>playlist play https%3A%2F%2Fmrsjonnie.github.io%2Fhouseparty-download%2Fdoof.m3u%3Fepisode%3D106768656</command>
+  <abort>1</abort>
+  <body>
+    <outline text="Doof wordt gestart" type="text" ignore="1"/>
+  </body>
+</opml>

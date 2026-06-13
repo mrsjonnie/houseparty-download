@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<opml version="2.0">
+  <head>
+    <title>Doof – nieuwste uitzending</title>
+    <cachetime>1</cachetime>
+    <forceRefresh>1</forceRefresh>
+  </head>
+  <body>
+    <outline text="Fri 12 Jun 2026 – Doof – uur 1 [Latifa Tee]" title="Fri 12 Jun 2026 – Doof – uur 1 [Latifa Tee]" type="audio" url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur1.mp3" duration="3600" description="Doof"/>
+    <outline text="Fri 12 Jun 2026 – Doof – uur 2 [Latifa Tee]" title="Fri 12 Jun 2026 – Doof – uur 2 [Latifa Tee]" type="audio" url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur2.mp3" duration="3600" description="Doof"/>
+    <outline text="Fri 12 Jun 2026 – Doof – uur 3 [Latifa Tee]" title="Fri 12 Jun 2026 – Doof – uur 3 [Latifa Tee]" type="audio" url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur3.mp3" duration="3600" description="Doof"/>
+  </body>
+</opml>
