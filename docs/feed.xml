@@ -1,84 +1,127 @@
-<?xml version="1.0" ?>
-<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+<?xml version="1.0" encoding="utf-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
   <channel>
-    <title>Triple J Local</title>
+    <title>Triple J House Party &amp; Doof – privéfeed</title>
     <link>https://www.abc.net.au/triplej/programs</link>
-    <description>Triple J local MP3 feed</description>
+    <description>Persoonlijke RSS-feed met House Party en Doof, verdeeld in delen van één uur.</description>
     <language>en-au</language>
-    <itunes:author>Triple J</itunes:author>
-    <itunes:summary>Triple J shows split into 1-hour MP3 parts.</itunes:summary>
+    <generator>houseparty-download</generator>
+    <ttl>60</ttl>
+    <atom:link href="https://mrsjonnie.github.io/houseparty-download/feed.xml" rel="self" type="application/rss+xml"/>
+    <lastBuildDate>Sat, 13 Jun 2026 18:30:18 +0000</lastBuildDate>
+    <itunes:author>Persoonlijke feed</itunes:author>
+    <itunes:type>episodic</itunes:type>
+    <itunes:summary>House Party en Doof, verdeeld in delen van één uur.</itunes:summary>
     <itunes:explicit>false</itunes:explicit>
+    <itunes:block>yes</itunes:block>
+    <itunes:category text="Music"/>
     <item>
-      <title>Sat 13 Jun 2026 at 8:00am – House Party uur 1 [Latifa Tee]</title>
+      <title>Sat 13 Jun 2026 – House Party – uur 1 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106770444</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106770444#uur1</guid>
-      <description/>
-      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+      <description>House Party, deel 1. Bron: ABC Triple J.</description>
+      <itunes:summary>House Party, deel 1. Bron: ABC Triple J.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>01:00:00</itunes:duration>
+      <pubDate>Sat, 13 Jun 2026 08:00:00 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur1.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
-      <title>Sat 13 Jun 2026 at 8:00am – House Party uur 2 [Latifa Tee]</title>
+      <title>Sat 13 Jun 2026 – House Party – uur 2 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106770444</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106770444#uur2</guid>
-      <description/>
-      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+      <description>House Party, deel 2. Bron: ABC Triple J.</description>
+      <itunes:summary>House Party, deel 2. Bron: ABC Triple J.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>01:00:00</itunes:duration>
+      <pubDate>Sat, 13 Jun 2026 08:00:00 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur2.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
-      <title>Sat 13 Jun 2026 at 8:00am – House Party uur 3 [Latifa Tee]</title>
+      <title>Sat 13 Jun 2026 – House Party – uur 3 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106770444</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106770444#uur3</guid>
-      <description/>
-      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+      <description>House Party, deel 3. Bron: ABC Triple J.</description>
+      <itunes:summary>House Party, deel 3. Bron: ABC Triple J.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>01:00:00</itunes:duration>
+      <pubDate>Sat, 13 Jun 2026 08:00:00 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur3.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
-      <title>Fri 12 Jun 2026 at 8:00am – House Party uur 1 [Shantan Wantan Ichiban]</title>
-      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur1</guid>
-      <description/>
-      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur1.mp3" type="audio/mpeg" length="86401197"/>
-    </item>
-    <item>
-      <title>Fri 12 Jun 2026 at 8:00am – House Party uur 2 [Shantan Wantan Ichiban]</title>
-      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur2</guid>
-      <description/>
-      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur2.mp3" type="audio/mpeg" length="86401197"/>
-    </item>
-    <item>
-      <title>Fri 12 Jun 2026 at 8:00am – House Party uur 3 [Shantan Wantan Ichiban]</title>
-      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur3</guid>
-      <description/>
-      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur3.mp3" type="audio/mpeg" length="86401197"/>
-    </item>
-    <item>
-      <title>Fri 12 Jun 2026 at 8:00am – Doof uur 1 [Latifa Tee]</title>
+      <title>Fri 12 Jun 2026 – Doof – uur 1 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/doof/doof/106768656</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/doof/doof/106768656#uur1</guid>
-      <description/>
-      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+      <description>Doof, deel 1. Bron: ABC Triple J.</description>
+      <itunes:summary>Doof, deel 1. Bron: ABC Triple J.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>01:00:00</itunes:duration>
+      <pubDate>Fri, 12 Jun 2026 12:00:00 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur1.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
-      <title>Fri 12 Jun 2026 at 8:00am – Doof uur 2 [Latifa Tee]</title>
+      <title>Fri 12 Jun 2026 – Doof – uur 2 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/doof/doof/106768656</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/doof/doof/106768656#uur2</guid>
-      <description/>
-      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+      <description>Doof, deel 2. Bron: ABC Triple J.</description>
+      <itunes:summary>Doof, deel 2. Bron: ABC Triple J.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>01:00:00</itunes:duration>
+      <pubDate>Fri, 12 Jun 2026 12:00:00 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur2.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
-      <title>Fri 12 Jun 2026 at 8:00am – Doof uur 3 [Latifa Tee]</title>
+      <title>Fri 12 Jun 2026 – Doof – uur 3 [Latifa Tee]</title>
       <link>https://www.abc.net.au/triplej/programs/doof/doof/106768656</link>
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/doof/doof/106768656#uur3</guid>
-      <description/>
-      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+      <description>Doof, deel 3. Bron: ABC Triple J.</description>
+      <itunes:summary>Doof, deel 3. Bron: ABC Triple J.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>01:00:00</itunes:duration>
+      <pubDate>Fri, 12 Jun 2026 12:00:00 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur3.mp3" type="audio/mpeg" length="86391405"/>
+    </item>
+    <item>
+      <title>Fri 12 Jun 2026 – House Party – uur 1 [Shantan Wantan Ichiban]</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur1</guid>
+      <description>House Party, deel 1. Bron: ABC Triple J.</description>
+      <itunes:summary>House Party, deel 1. Bron: ABC Triple J.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>01:00:00</itunes:duration>
+      <pubDate>Fri, 12 Jun 2026 08:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur1.mp3" type="audio/mpeg" length="86401197"/>
+    </item>
+    <item>
+      <title>Fri 12 Jun 2026 – House Party – uur 2 [Shantan Wantan Ichiban]</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur2</guid>
+      <description>House Party, deel 2. Bron: ABC Triple J.</description>
+      <itunes:summary>House Party, deel 2. Bron: ABC Triple J.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>01:00:00</itunes:duration>
+      <pubDate>Fri, 12 Jun 2026 08:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur2.mp3" type="audio/mpeg" length="86401197"/>
+    </item>
+    <item>
+      <title>Fri 12 Jun 2026 – House Party – uur 3 [Shantan Wantan Ichiban]</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur3</guid>
+      <description>House Party, deel 3. Bron: ABC Triple J.</description>
+      <itunes:summary>House Party, deel 3. Bron: ABC Triple J.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>01:00:00</itunes:duration>
+      <pubDate>Fri, 12 Jun 2026 08:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur3.mp3" type="audio/mpeg" length="86401197"/>
     </item>
   </channel>
 </rss>
