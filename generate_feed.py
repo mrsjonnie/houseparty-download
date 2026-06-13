@@ -4,12 +4,14 @@ Genereer een persoonlijke Triple J-feed voor GitHub Pages en Lyrion.
 
 Uitvoer in docs/:
 - feed.xml                         gecombineerde podcast-RSS
-- <programma>.m3u                 nieuwste aflevering als wachtrij
+- <programma>.m3u                 nieuwste aflevering met uur 1, 2 en 3
 - <programma>.opml                bladerbare lijst met de losse uren
-- <programma>-play.opml           één-klik-start voor de geselecteerde Lyrion-speler
-- programmas.opml                 overzicht van alle geconfigureerde programma's
 - tunein.m3u                      compatibiliteitsalias voor House Party
 - mp3/*.mp3                       audio in delen van maximaal één uur
+
+Niet meer gegenereerd:
+- programmas.opml
+- <programma>-play.opml
 
 De zichtbare titel in RSS, M3U en OPML is dezelfde titel die als ID3-titel
 in het MP3-bestand wordt opgeslagen. De technische bestandsnaam blijft
@@ -29,7 +31,6 @@ import sys
 import xml.dom.minidom
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import quote
 from xml.etree.ElementTree import Element, SubElement, register_namespace, tostring
 
 import requests
@@ -63,7 +64,6 @@ SITE_BASE = "https://mrsjonnie.github.io/houseparty-download"
 DOCS_DIR = Path("docs")
 MP3_DIR = DOCS_DIR / "mp3"
 FEED_PATH = DOCS_DIR / "feed.xml"
-PROGRAMS_INDEX_PATH = DOCS_DIR / "programmas.opml"
 
 # Oude URL behouden als alias voor House Party.
 TUNEIN_ALIAS_PROGRAM_SLUG = "house-party"
@@ -147,7 +147,7 @@ def parse_datetime(value) -> datetime | None:
 
 
 def format_date(upload_date: str | None) -> str:
-    """Maak een korte datum voor de MP3-/OPML-titel."""
+    """Maak een nette Nederlandse datum voor TuneIn, M3U, OPML en ID3."""
     if not upload_date:
         return ""
 
@@ -156,12 +156,22 @@ def format_date(upload_date: str | None) -> str:
     except ValueError:
         return ""
 
-    return (
-        f"{dt.strftime('%a')} "
-        f"{dt.strftime('%d').lstrip('0')} "
-        f"{dt.strftime('%b')} "
-        f"{dt.strftime('%Y')}"
+    months = (
+        "januari",
+        "februari",
+        "maart",
+        "april",
+        "mei",
+        "juni",
+        "juli",
+        "augustus",
+        "september",
+        "oktober",
+        "november",
+        "december",
     )
+
+    return f"{dt.day} {months[dt.month - 1]} {dt.year}"
 
 
 def format_duration(total_seconds: int) -> str:
@@ -411,6 +421,19 @@ def extract_episode_info(page_url: str) -> dict | None:
 # MP3 maken
 # ---------------------------------------------------------------------------
 
+def build_album_title(
+    program_name: str,
+    upload_date: str | None,
+) -> str:
+    """Titel van de volledige uitzending/playlist."""
+    date_text = format_date(upload_date)
+
+    if date_text:
+        return f"{program_name} – {date_text}"
+
+    return f"{program_name} – nieuwste uitzending"
+
+
 def build_audio_title(
     program_name: str,
     hour_number: int,
@@ -418,20 +441,19 @@ def build_audio_title(
     presenter: str,
 ) -> str:
     """
-    Maak de zichtbare omschrijving.
+    Maak de zichtbare TuneIn-/MP3-naam.
 
     Deze tekst wordt gebruikt als:
     - ID3-titel in het MP3-bestand;
     - titel in RSS;
-    - omschrijving in M3U;
+    - #EXTINF-omschrijving in M3U;
     - zichtbare naam in OPML.
     """
-    date_text = format_date(upload_date)
-    base_title = f"{program_name} – uur {hour_number}"
-    title = f"{date_text} – {base_title}" if date_text else base_title
+    album_title = build_album_title(program_name, upload_date)
+    title = f"{album_title} – uur {hour_number}"
 
     if presenter:
-        title += f" [{presenter}]"
+        title += f" – {presenter}"
 
     return title
 
@@ -442,9 +464,11 @@ def convert_to_mp3(
     start_seconds: int,
     duration_seconds: int,
     title: str,
+    album_title: str,
     program_name: str,
     episode_title: str,
     hour_number: int,
+    total_tracks: int,
 ) -> bool:
     """Download en converteer één audiodeel met FFmpeg."""
     temporary_path = output_path.with_suffix(".part.mp3")
@@ -487,11 +511,11 @@ def convert_to_mp3(
         "-metadata",
         "artist=Triple J",
         "-metadata",
-        f"album={program_name}",
+        f"album={album_title}",
         "-metadata",
         f"comment={episode_title or 'Bron: ABC Triple J'}",
         "-metadata",
-        f"track={hour_number}",
+        f"track={hour_number}/{total_tracks}",
         "-write_xing",
         "1",
         "-avoid_negative_ts",
@@ -518,6 +542,115 @@ def convert_to_mp3(
         return False
 
     os.replace(temporary_path, output_path)
+    return True
+
+
+def read_mp3_metadata(path: Path) -> dict[str, str]:
+    """Lees relevante ID3-tags met ffprobe."""
+    command = [
+        "ffprobe",
+        "-v",
+        "error",
+        "-show_entries",
+        "format_tags=title,artist,album,track,comment",
+        "-of",
+        "json",
+        str(path),
+    ]
+
+    result = subprocess.run(
+        command,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    if result.returncode != 0:
+        return {}
+
+    try:
+        payload = json.loads(result.stdout or "{}")
+    except json.JSONDecodeError:
+        return {}
+
+    tags = payload.get("format", {}).get("tags", {}) or {}
+    return {str(key).lower(): str(value) for key, value in tags.items()}
+
+
+def ensure_mp3_metadata(
+    path: Path,
+    title: str,
+    album_title: str,
+    program_name: str,
+    episode_title: str,
+    hour_number: int,
+    total_tracks: int,
+) -> bool:
+    """
+    Werk bestaande ID3-tags bij zonder de audio opnieuw te downloaden.
+
+    FFmpeg neemt de audiostream ongewijzigd over met -c:a copy.
+    """
+    desired = {
+        "title": title,
+        "artist": "Triple J",
+        "album": album_title,
+        "track": f"{hour_number}/{total_tracks}",
+        "comment": episode_title or "Bron: ABC Triple J",
+    }
+
+    current = read_mp3_metadata(path)
+
+    if all(current.get(key) == value for key, value in desired.items()):
+        return True
+
+    temporary_path = path.with_suffix(".metadata.mp3")
+
+    command = [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-y",
+        "-i",
+        str(path),
+        "-map",
+        "0:a:0",
+        "-c:a",
+        "copy",
+        "-map_metadata",
+        "-1",
+        "-id3v2_version",
+        "3",
+        "-metadata",
+        f"title={desired['title']}",
+        "-metadata",
+        f"artist={desired['artist']}",
+        "-metadata",
+        f"album={desired['album']}",
+        "-metadata",
+        f"track={desired['track']}",
+        "-metadata",
+        f"comment={desired['comment']}",
+        str(temporary_path),
+    ]
+
+    result = subprocess.run(
+        command,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    if result.returncode != 0 or not mp3_is_usable(temporary_path):
+        print(f"Waarschuwing: ID3-tags konden niet worden bijgewerkt voor {path.name}")
+        if result.stderr:
+            print(result.stderr[-800:])
+        temporary_path.unlink(missing_ok=True)
+        return False
+
+    os.replace(temporary_path, path)
+    print(f"ID3 bijgewerkt: {path.name} → {title}")
     return True
 
 
@@ -714,19 +847,39 @@ def build_rss(items: list[dict]) -> str:
 # ---------------------------------------------------------------------------
 
 def build_program_m3u(items: list[dict], program_slug: str) -> str:
-    """Maak een online M3U met de nieuwste aflevering."""
+    """
+    Maak één online M3U voor de nieuwste gedownloade aflevering.
+
+    TuneIn kan de #EXTINF-titel tonen. Daarnaast bevatten de MP3-bestanden
+    dezelfde nette titel in hun ID3-tags.
+    """
     latest_items = latest_program_items(items, program_slug)
 
     if not latest_items:
         return "#EXTM3U\n"
 
-    lines = ["#EXTM3U"]
+    first_item = latest_items[0]
+    album_title = (
+        first_item.get("album_title")
+        or build_album_title(
+            str(first_item.get("program_name") or program_slug),
+            first_item.get("date"),
+        )
+    )
+
+    lines = [
+        "#EXTM3U",
+        f"#PLAYLIST:{album_title}",
+        f"#EXTALB:{album_title}",
+        "#EXTART:Triple J",
+    ]
 
     for item in latest_items:
-        # De omschrijving is de echte MP3-/ID3-titel, niet de technische filename.
         title = " ".join(str(item["title"]).splitlines()).strip()
         duration = safe_int(item.get("duration_sec"))
+
         lines.append(f"#EXTINF:{duration},{title}")
+        lines.append(f"#EXTGRP:{album_title}")
         lines.append(item["url"])
 
     return "\n".join(lines) + "\n"
@@ -774,96 +927,25 @@ def build_program_opml(
     return pretty_xml(opml)
 
 
-def build_program_play_opml(
-    items: list[dict],
-    program_name: str,
-    program_slug: str,
-) -> str:
-    """
-    Eén-klik-OPML.
-
-    Lyrion voert bij openen 'playlist play <online m3u>' uit voor de
-    momenteel geselecteerde speler. Er wordt dus geen MAC-adres opgeslagen.
-    """
-    latest_items = latest_program_items(items, program_slug)
-
-    opml = Element("opml", {"version": "2.0"})
-    head = SubElement(opml, "head")
-
-    SubElement(head, "title").text = f"Start {program_name}"
-    SubElement(head, "cachetime").text = "1"
-    SubElement(head, "forceRefresh").text = "1"
-
-    m3u_url = f"{SITE_BASE}/{program_slug}.m3u"
-
-    if latest_items:
-        episode_id = str(latest_items[0].get("episode_id", ""))
-
-        if episode_id:
-            # Cachebreker: de URL verandert bij een nieuwe ABC-aflevering.
-            m3u_url += f"?episode={episode_id}"
-
-    encoded_m3u_url = quote(m3u_url, safe="")
-
-    SubElement(opml, "command").text = (
-        f"playlist play {encoded_m3u_url}"
-    )
-    SubElement(opml, "abort").text = "1"
-
-    # Een geldige body voor parsers die geen lege OPML-body accepteren.
-    body = SubElement(opml, "body")
-    SubElement(
-        body,
-        "outline",
-        {
-            "text": f"{program_name} wordt gestart",
-            "type": "text",
-            "ignore": "1",
-        },
-    )
-
-    return pretty_xml(opml)
-
-
-def build_programs_index_opml(programs: list[dict]) -> str:
-    """Maak één online overzicht met alle programma's."""
-    opml = Element("opml", {"version": "2.0"})
-    head = SubElement(opml, "head")
-
-    SubElement(head, "title").text = "Triple J-programma's"
-    SubElement(head, "cachetime").text = "1"
-    SubElement(head, "forceRefresh").text = "1"
-
-    body = SubElement(opml, "body")
-
-    for program in programs:
-        name = program["name"]
-        slug = program["slug"]
-
-        browse_attributes = {
-            "text": f"{name} – uren bekijken",
-            "title": f"{name} – uren bekijken",
-            "type": "opml",
-            "url": f"{SITE_BASE}/{slug}.opml",
-        }
-        add_cover_attribute(browse_attributes)
-        SubElement(body, "outline", browse_attributes)
-
-        play_attributes = {
-            "text": f"{name} – direct starten",
-            "title": f"{name} – direct starten",
-            "type": "opml",
-            "url": f"{SITE_BASE}/{slug}-play.opml",
-        }
-        add_cover_attribute(play_attributes)
-        SubElement(body, "outline", play_attributes)
-
-    return pretty_xml(opml)
-
-
 # ---------------------------------------------------------------------------
 # Hoofdprogramma
 # ---------------------------------------------------------------------------
+
+def remove_obsolete_generated_files() -> None:
+    """Verwijder OPML-bestanden die deze versie niet meer gebruikt."""
+    obsolete_paths = [
+        DOCS_DIR / "programmas.opml",
+        *[
+            DOCS_DIR / f"{program['slug']}-play.opml"
+            for program in PROGRAMS
+        ],
+    ]
+
+    for path in obsolete_paths:
+        if path.exists():
+            path.unlink()
+            print(f"Verouderd bestand verwijderd: {path}")
+
 
 def main() -> int:
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
@@ -871,6 +953,8 @@ def main() -> int:
 
     # Geen Jekyll-verwerking op GitHub Pages.
     (DOCS_DIR / ".nojekyll").touch()
+
+    remove_obsolete_generated_files()
 
     if shutil.which("ffmpeg") is None:
         print("FOUT: ffmpeg is niet geïnstalleerd of staat niet in PATH.")
@@ -940,6 +1024,7 @@ def main() -> int:
             published_at = info.get("published_at")
             presenter = str(info.get("presenter_name") or "")
             episode_title = str(info.get("episode_title") or "")
+            album_title = build_album_title(name, upload_date)
 
             number_of_chunks = min(
                 3,
@@ -979,9 +1064,11 @@ def main() -> int:
                         start_seconds=start_seconds,
                         duration_seconds=duration_seconds,
                         title=title,
+                        album_title=album_title,
                         program_name=name,
                         episode_title=episode_title,
                         hour_number=hour_number,
+                        total_tracks=number_of_chunks,
                     )
 
                     if not converted:
@@ -990,12 +1077,23 @@ def main() -> int:
                 else:
                     print(f"Bestaat al: {mp3_filename}")
 
+                ensure_mp3_metadata(
+                    path=mp3_path,
+                    title=title,
+                    album_title=album_title,
+                    program_name=name,
+                    episode_title=episode_title,
+                    hour_number=hour_number,
+                    total_tracks=number_of_chunks,
+                )
+
                 keep_filenames.add(mp3_filename)
                 audio_url_for_feed = f"{SITE_BASE}/mp3/{mp3_filename}"
 
                 feed_items.append(
                     {
                         "title": title,
+                        "album_title": album_title,
                         "filename": mp3_filename,
                         "url": audio_url_for_feed,
                         "page_url": page_url,
@@ -1050,9 +1148,7 @@ def main() -> int:
     write_text_file(FEED_PATH, build_rss(feed_items))
     print(f"Klaar: {FEED_PATH} ({len(feed_items)} items)")
 
-    # Per programma eigen M3U en OPML-bestanden.
-    generated_programs: list[dict] = []
-
+    # Per programma één M3U en één bladerbare OPML.
     for program in PROGRAMS:
         program_name = str(program["name"])
         program_slug = str(program["slug"])
@@ -1067,7 +1163,6 @@ def main() -> int:
 
         m3u_path = DOCS_DIR / f"{program_slug}.m3u"
         browse_opml_path = DOCS_DIR / f"{program_slug}.opml"
-        play_opml_path = DOCS_DIR / f"{program_slug}-play.opml"
 
         write_text_file(
             m3u_path,
@@ -1081,31 +1176,11 @@ def main() -> int:
                 program_slug,
             ),
         )
-        write_text_file(
-            play_opml_path,
-            build_program_play_opml(
-                feed_items,
-                program_name,
-                program_slug,
-            ),
-        )
-
-        generated_programs.append(program)
 
         print(f"Klaar: {m3u_path}")
         print(f"Klaar: {browse_opml_path}")
-        print(f"Klaar: {play_opml_path}")
-        print(f"  Bekijken: {SITE_BASE}/{program_slug}.opml")
-        print(f"  Starten:  {SITE_BASE}/{program_slug}-play.opml")
-
-    # Overzicht van alle programma's.
-    if generated_programs:
-        write_text_file(
-            PROGRAMS_INDEX_PATH,
-            build_programs_index_opml(generated_programs),
-        )
-        print(f"Klaar: {PROGRAMS_INDEX_PATH}")
-        print(f"Overzicht: {SITE_BASE}/programmas.opml")
+        print(f"  TuneIn/M3U: {SITE_BASE}/{program_slug}.m3u")
+        print(f"  Bekijken:   {SITE_BASE}/{program_slug}.opml")
 
     # Oude House Party-URL behouden.
     if latest_program_items(feed_items, TUNEIN_ALIAS_PROGRAM_SLUG):
