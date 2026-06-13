@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
 <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
   <channel>
-    <title>Triple J House Party Local</title>
-    <link>https://www.abc.net.au/triplej/programs/house-party</link>
-    <description>Triple J House Party DJ mix show</description>
+    <title>Triple J Local</title>
+    <link>https://www.abc.net.au/triplej/programs</link>
+    <description>Triple J local MP3 feed</description>
     <language>en-au</language>
     <itunes:author>Triple J</itunes:author>
-    <itunes:summary>House Party feed split into 1-hour MP3 parts.</itunes:summary>
+    <itunes:summary>Triple J shows split into 1-hour MP3 parts.</itunes:summary>
     <itunes:explicit>false</itunes:explicit>
     <item>
       <title>Sat 13 Jun 2026 at 8:00am – House Party uur 1 [Latifa Tee]</title>
@@ -14,7 +14,7 @@
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106770444#uur1</guid>
       <description/>
       <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106770444_uur1.mp3" type="audio/mpeg" length="86401197"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur1.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
       <title>Sat 13 Jun 2026 at 8:00am – House Party uur 2 [Latifa Tee]</title>
@@ -22,7 +22,7 @@
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106770444#uur2</guid>
       <description/>
       <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106770444_uur2.mp3" type="audio/mpeg" length="86401197"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur2.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
       <title>Sat 13 Jun 2026 at 8:00am – House Party uur 3 [Latifa Tee]</title>
@@ -30,7 +30,7 @@
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106770444#uur3</guid>
       <description/>
       <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106770444_uur3.mp3" type="audio/mpeg" length="86401197"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur3.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
       <title>Fri 12 Jun 2026 at 8:00am – House Party uur 1 [Shantan Wantan Ichiban]</title>
@@ -38,7 +38,7 @@
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur1</guid>
       <description/>
       <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106768662_uur1.mp3" type="audio/mpeg" length="86401197"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur1.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
       <title>Fri 12 Jun 2026 at 8:00am – House Party uur 2 [Shantan Wantan Ichiban]</title>
@@ -46,7 +46,7 @@
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur2</guid>
       <description/>
       <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106768662_uur2.mp3" type="audio/mpeg" length="86401197"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur2.mp3" type="audio/mpeg" length="86401197"/>
     </item>
     <item>
       <title>Fri 12 Jun 2026 at 8:00am – House Party uur 3 [Shantan Wantan Ichiban]</title>
@@ -54,7 +54,31 @@
       <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur3</guid>
       <description/>
       <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/106768662_uur3.mp3" type="audio/mpeg" length="86401197"/>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur3.mp3" type="audio/mpeg" length="86401197"/>
+    </item>
+    <item>
+      <title>Fri 12 Jun 2026 at 8:00am – Doof uur 1 [Latifa Tee]</title>
+      <link>https://www.abc.net.au/triplej/programs/doof/doof/106768656</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/doof/doof/106768656#uur1</guid>
+      <description/>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur1.mp3" type="audio/mpeg" length="86401197"/>
+    </item>
+    <item>
+      <title>Fri 12 Jun 2026 at 8:00am – Doof uur 2 [Latifa Tee]</title>
+      <link>https://www.abc.net.au/triplej/programs/doof/doof/106768656</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/doof/doof/106768656#uur2</guid>
+      <description/>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur2.mp3" type="audio/mpeg" length="86401197"/>
+    </item>
+    <item>
+      <title>Fri 12 Jun 2026 at 8:00am – Doof uur 3 [Latifa Tee]</title>
+      <link>https://www.abc.net.au/triplej/programs/doof/doof/106768656</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/doof/doof/106768656#uur3</guid>
+      <description/>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur3.mp3" type="audio/mpeg" length="86391405"/>
     </item>
   </channel>
 </rss>
