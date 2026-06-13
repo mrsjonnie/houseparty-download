@@ -3,15 +3,16 @@
 Genereer een persoonlijke Triple J-feed voor GitHub Pages en Lyrion.
 
 Uitvoer in docs/:
-- feed.xml                         gecombineerde podcast-RSS
-- <programma>.m3u                 nieuwste aflevering met uur 1, 2 en 3
-- <programma>.opml                bladerbare lijst met de losse uren
+- feed.xml                         House Party podcast-RSS
+- house-party.m3u                 nieuwste aflevering met uur 1, 2 en 3
+- house-party1.m3u                alleen uur 1
+- house-party2.m3u                alleen uur 2
+- house-party3.m3u                alleen uur 3
+- house-party.opml                bladerbare lijst met de losse uren
 - tunein.m3u                      compatibiliteitsalias voor House Party
-- mp3/*.mp3                       audio in delen van maximaal één uur
+- mp3/*.mp3                       House Party-audio in delen van maximaal één uur
 
-Niet meer gegenereerd:
-- programmas.opml
-- <programma>-play.opml
+Doof wordt in dit project niet meer gegenereerd.
 
 De zichtbare titel in RSS, M3U en OPML is dezelfde titel die als ID3-titel
 in het MP3-bestand wordt opgeslagen. De technische bestandsnaam blijft
@@ -51,11 +52,6 @@ PROGRAMS = [
         "name": "House Party",
         "slug": "house-party",
         "aantal_afleveringen": 2,
-    },
-    {
-        "name": "Doof",
-        "slug": "doof",
-        "aantal_afleveringen": 1,
     },
 ]
 
@@ -716,10 +712,10 @@ def build_rss(items: list[dict]) -> str:
 
     feed_url = f"{SITE_BASE}/feed.xml"
 
-    SubElement(channel, "title").text = "Triple J-programma's – privéfeed"
+    SubElement(channel, "title").text = "Triple J House Party – privéfeed"
     SubElement(channel, "link").text = "https://www.abc.net.au/triplej/programs"
     SubElement(channel, "description").text = (
-        "Persoonlijke feed met geselecteerde Triple J-programma's, "
+        "Persoonlijke feed met Triple J House Party, "
         "verdeeld in delen van maximaal één uur."
     )
     SubElement(channel, "language").text = "en-au"
@@ -743,7 +739,7 @@ def build_rss(items: list[dict]) -> str:
     SubElement(channel, f"{{{ITUNES_NS}}}author").text = "Persoonlijke feed"
     SubElement(channel, f"{{{ITUNES_NS}}}type").text = "episodic"
     SubElement(channel, f"{{{ITUNES_NS}}}summary").text = (
-        "Geselecteerde Triple J-programma's in delen van maximaal één uur."
+        "Triple J House Party in delen van maximaal één uur."
     )
     SubElement(channel, f"{{{ITUNES_NS}}}explicit").text = "false"
     SubElement(channel, f"{{{ITUNES_NS}}}block").text = "yes"
@@ -760,7 +756,7 @@ def build_rss(items: list[dict]) -> str:
 
         image = SubElement(channel, "image")
         SubElement(image, "url").text = cover_url
-        SubElement(image, "title").text = "Triple J-programma's"
+        SubElement(image, "title").text = "Triple J House Party"
         SubElement(image, "link").text = "https://www.abc.net.au/triplej/programs"
 
         SubElement(
@@ -885,6 +881,57 @@ def build_program_m3u(items: list[dict], program_slug: str) -> str:
     return "\n".join(lines) + "\n"
 
 
+def build_single_hour_m3u(
+    items: list[dict],
+    program_slug: str,
+    hour_number: int,
+) -> str:
+    """
+    Maak een M3U met precies één uur van de nieuwste aflevering.
+
+    De bestandsnaam van deze M3U wordt bijvoorbeeld house-party1.m3u.
+    Daardoor is de URL in TuneIn herkenbaarder, ook wanneer TuneIn de
+    #PLAYLIST- of #EXTINF-titel niet als favorietennaam gebruikt.
+    """
+    latest_items = latest_program_items(items, program_slug)
+
+    selected = next(
+        (
+            item
+            for item in latest_items
+            if safe_int(item.get("chunk_index")) == hour_number
+        ),
+        None,
+    )
+
+    if not selected:
+        return "#EXTM3U\n"
+
+    album_title = (
+        selected.get("album_title")
+        or build_album_title(
+            str(selected.get("program_name") or program_slug),
+            selected.get("date"),
+        )
+    )
+    track_title = " ".join(
+        str(selected["title"]).splitlines()
+    ).strip()
+    duration = safe_int(selected.get("duration_sec"))
+
+    lines = [
+        "#EXTM3U",
+        f"#PLAYLIST:{track_title}",
+        f"#EXTALB:{album_title}",
+        "#EXTART:Triple J",
+        f"#EXTINF:{duration},{track_title}",
+        f"#EXTGRP:{album_title}",
+        selected["url"],
+    ]
+
+    return "\n".join(lines) + "\n"
+
+
 def add_cover_attribute(attributes: dict[str, str]) -> None:
     if (DOCS_DIR / "cover.jpg").exists():
         attributes["image"] = f"{SITE_BASE}/cover.jpg"
@@ -931,14 +978,33 @@ def build_program_opml(
 # Hoofdprogramma
 # ---------------------------------------------------------------------------
 
+def remove_unused_numbered_playlists(
+    program_slug: str,
+    available_hours: set[int],
+) -> None:
+    """Verwijder oude genummerde M3U's waarvoor geen audiodeel meer bestaat."""
+    for hour_number in (1, 2, 3):
+        if hour_number in available_hours:
+            continue
+
+        path = DOCS_DIR / f"{program_slug}{hour_number}.m3u"
+
+        if path.exists():
+            path.unlink()
+            print(f"Verouderde uurplaylist verwijderd: {path}")
+
+
 def remove_obsolete_generated_files() -> None:
-    """Verwijder OPML-bestanden die deze versie niet meer gebruikt."""
+    """Verwijder bestanden die niet meer bij het House Party-project horen."""
     obsolete_paths = [
         DOCS_DIR / "programmas.opml",
-        *[
-            DOCS_DIR / f"{program['slug']}-play.opml"
-            for program in PROGRAMS
-        ],
+        DOCS_DIR / "house-party-play.opml",
+        DOCS_DIR / "doof.opml",
+        DOCS_DIR / "doof-play.opml",
+        DOCS_DIR / "doof.m3u",
+        DOCS_DIR / "doof1.m3u",
+        DOCS_DIR / "doof2.m3u",
+        DOCS_DIR / "doof3.m3u",
     ]
 
     for path in obsolete_paths:
@@ -1133,7 +1199,7 @@ def main() -> int:
             all_programs_successful = False
 
     if not feed_items:
-        print("FOUT: er zijn geen geldige feeditems gemaakt.")
+        print("FOUT: er zijn geen geldige House Party-items gemaakt.")
         return 1
 
     if all_programs_successful:
@@ -1177,10 +1243,43 @@ def main() -> int:
             ),
         )
 
+        available_hours = {
+            safe_int(item.get("chunk_index"))
+            for item in latest_items
+        }
+
+        for hour_number in sorted(available_hours):
+            if hour_number not in (1, 2, 3):
+                continue
+
+            single_m3u_path = (
+                DOCS_DIR / f"{program_slug}{hour_number}.m3u"
+            )
+
+            write_text_file(
+                single_m3u_path,
+                build_single_hour_m3u(
+                    feed_items,
+                    program_slug,
+                    hour_number,
+                ),
+            )
+
+            print(f"Klaar: {single_m3u_path}")
+            print(
+                f"  TuneIn uur {hour_number}: "
+                f"{SITE_BASE}/{program_slug}{hour_number}.m3u"
+            )
+
+        remove_unused_numbered_playlists(
+            program_slug,
+            available_hours,
+        )
+
         print(f"Klaar: {m3u_path}")
         print(f"Klaar: {browse_opml_path}")
-        print(f"  TuneIn/M3U: {SITE_BASE}/{program_slug}.m3u")
-        print(f"  Bekijken:   {SITE_BASE}/{program_slug}.opml")
+        print(f"  Alles:    {SITE_BASE}/{program_slug}.m3u")
+        print(f"  Bekijken: {SITE_BASE}/{program_slug}.opml")
 
     # Oude House Party-URL behouden.
     if latest_program_items(feed_items, TUNEIN_ALIAS_PROGRAM_SLUG):
