@@ -47,7 +47,7 @@ jobs:
 
       - name: Commit changes
         run: |
-          git add -A docs/feed.xml docs/mp3
+          git add -A docs
           if ! git diff --cached --quiet; then
             git commit -m "Update Triple J feed & MP3s $(date -u '+%Y-%m-%d %H:%M UTC')"
             git push origin HEAD:${{ github.ref }}
