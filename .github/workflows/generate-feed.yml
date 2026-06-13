@@ -1,13 +1,19 @@
-name: Generate Triple J RSS Feed
+name: Generate Triple J RSS, OPML and MP3 files
 
 on:
   schedule:
-    - cron: '0 6 * * 6'
+    # Elke zaterdag om 06:00 UTC (08:00 Nederlandse zomertijd).
+    - cron: "0 6 * * 6"
   workflow_dispatch:
+
+concurrency:
+  group: triple-j-feed
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
 
@@ -16,6 +22,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -27,30 +34,30 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      - name: Install Python deps
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Generate feed & MP3s
+      - name: Generate RSS, OPML, M3U and MP3 files
         run: |
           python generate_feed.py
+
+      - name: Show generated files
+        run: |
+          find docs -maxdepth 2 -type f -printf "%p\n" | sort
 
       - name: Configure git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Set remote URL for push
-        run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-
-      - name: Commit changes
+      - name: Commit generated files
         run: |
           git add -A docs
           if ! git diff --cached --quiet; then
-            git commit -m "Update Triple J feed & MP3s $(date -u '+%Y-%m-%d %H:%M UTC')"
-            git push origin HEAD:${{ github.ref }}
+            git commit -m "Update Triple J RSS, OPML, playlists and MP3s $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push origin HEAD:${{ github.ref_name }}
           else
             echo "No changes to commit"
           fi
