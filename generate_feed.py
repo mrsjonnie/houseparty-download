@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import json, os, re, sys, subprocess, glob, math, time
+import json, os, re, sys, subprocess, glob, math
 from datetime import datetime, timezone
 from xml.etree.ElementTree import Element, SubElement, tostring
 import xml.dom.minidom
@@ -8,7 +8,6 @@ import requests
 
 AANTAL_AFLEVERINGEN = 2
 AANTAL_MINUTEN = "03:00:00"
-VERWIJDER_OUDER_DAN_DAGEN = 14
 
 BASE_URL = "https://www.abc.net.au/triplej/programs/house-party"
 PROGRAM_PAGE = BASE_URL
@@ -149,7 +148,12 @@ def extract_episode_info(page_url):
 def format_date(upload_date_str):
     try:
         dt = datetime.strptime(upload_date_str, "%Y%m%d").replace(tzinfo=timezone.utc)
-        return f"{dt.strftime('%a')} {dt.strftime('%d').lstrip('0')} {dt.strftime('%b')} {dt.strftime('%Y')} at 8:00am"
+        return (
+            f"{dt.strftime('%a')} "
+            f"{dt.strftime('%d').lstrip('0')} "
+            f"{dt.strftime('%b')} "
+            f"{dt.strftime('%Y')} at 8:00am"
+        )
     except Exception:
         return ""
 
@@ -177,7 +181,9 @@ def build_rss(items):
         if it.get("date"):
             try:
                 dt = datetime.strptime(it["date"], "%Y%m%d").replace(tzinfo=timezone.utc)
-                SubElement(item, "pubDate").text = dt.strftime("%a, %d %b %Y %H:%M:%S +0000")
+                SubElement(item, "pubDate").text = dt.strftime(
+                    "%a, %d %b %Y %H:%M:%S +0000"
+                )
             except Exception:
                 pass
 
@@ -191,16 +197,26 @@ def build_rss(items):
     ).toprettyxml(indent="  ")
 
 
-def cleanup_mp3s_older_than(days):
-    cutoff = time.time() - days * 24 * 60 * 60
+def cleanup_old_mp3s(keep_episode_ids):
+    """
+    Verwijder alle MP3's die niet horen bij de nieuwste afleveringen.
+    """
 
     for mp3_path in glob.glob(os.path.join(MP3_DIR, "*.mp3")):
-        try:
-            if os.path.getmtime(mp3_path) < cutoff:
+        fname = os.path.basename(mp3_path)
+
+        m = re.match(r"(\d+)_uur\d+\.mp3", fname)
+        if not m:
+            continue
+
+        episode_id = m.group(1)
+
+        if episode_id not in keep_episode_ids:
+            try:
                 os.remove(mp3_path)
-                print(f"Verwijderd ouder dan {days} dagen: {os.path.basename(mp3_path)}")
-        except OSError as e:
-            print(f"FOUT bij verwijderen {mp3_path}: {e}")
+                print(f"Verwijderd: {fname}")
+            except OSError as e:
+                print(f"FOUT bij verwijderen {fname}: {e}")
 
 
 if __name__ == "__main__":
@@ -219,6 +235,7 @@ if __name__ == "__main__":
 
     data = []
     processed_count = 0
+    keep_episode_ids = []
 
     total_seconds_requested = min(
         parse_hms_to_seconds(AANTAL_MINUTEN),
@@ -238,6 +255,7 @@ if __name__ == "__main__":
 
         m = re.search(r"/house-party/(\d+)", url)
         episode_id = m.group(1) if m else url.rstrip("/").split("/")[-1]
+        keep_episode_ids.append(episode_id)
 
         audio_url = info["audio_url"]
         upload_date = info["upload_date"]
@@ -276,7 +294,11 @@ if __name__ == "__main__":
                 mp3_path,
             ]
 
-            print(f"Converteren uur {uur_nummer}: {start_sec}s tot {start_sec + duration_sec}s")
+            print(
+                f"Converteren uur {uur_nummer}: "
+                f"{start_sec}s tot {start_sec + duration_sec}s"
+            )
+
             result = subprocess.run(ffmpeg_cmd, capture_output=True, text=True)
 
             if result.returncode != 0:
@@ -310,7 +332,7 @@ if __name__ == "__main__":
 
         processed_count += 1
 
-    cleanup_mp3s_older_than(VERWIJDER_OUDER_DAN_DAGEN)
+    cleanup_old_mp3s(set(keep_episode_ids))
 
     print(f"Feed bouwen met {len(data)} onderdelen...")
     with open("docs/feed.xml", "w", encoding="utf-8") as f:
