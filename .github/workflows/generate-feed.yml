@@ -1,4 +1,4 @@
-name: Generate Triple J House Party RSS Feed
+name: Generate Triple J RSS Feed
 
 on:
   schedule:
@@ -36,10 +36,6 @@ jobs:
         run: |
           python generate_feed.py
 
-      - name: Remove old MP3 files
-        run: |
-          find docs/mp3/ -name "*.mp3" -type f -mtime +14 -delete
-
       - name: Configure git
         run: |
           git config user.name "github-actions[bot]"
@@ -51,9 +47,9 @@ jobs:
 
       - name: Commit changes
         run: |
-          git add docs/feed.xml docs/mp3/*.mp3 || true
+          git add -A docs/feed.xml docs/mp3
           if ! git diff --cached --quiet; then
-            git commit -m "Update House Party feed & MP3s $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git commit -m "Update Triple J feed & MP3s $(date -u '+%Y-%m-%d %H:%M UTC')"
             git push origin HEAD:${{ github.ref }}
           else
             echo "No changes to commit"
