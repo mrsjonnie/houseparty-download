@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
   <channel>
-    <title>Triple J-programma's – privéfeed</title>
+    <title>Triple J House Party – privéfeed</title>
     <link>https://www.abc.net.au/triplej/programs</link>
-    <description>Persoonlijke feed met geselecteerde Triple J-programma's, verdeeld in delen van maximaal één uur.</description>
+    <description>Persoonlijke feed met Triple J House Party, verdeeld in delen van maximaal één uur.</description>
     <language>en-au</language>
     <generator>houseparty-download</generator>
     <ttl>60</ttl>
     <atom:link href="https://mrsjonnie.github.io/houseparty-download/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Sat, 13 Jun 2026 22:03:09 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 13 Jun 2026 22:29:33 +0000</lastBuildDate>
     <itunes:author>Persoonlijke feed</itunes:author>
     <itunes:type>episodic</itunes:type>
-    <itunes:summary>Geselecteerde Triple J-programma's in delen van maximaal één uur.</itunes:summary>
+    <itunes:summary>Triple J House Party in delen van maximaal één uur.</itunes:summary>
     <itunes:explicit>false</itunes:explicit>
     <itunes:block>yes</itunes:block>
     <itunes:category text="Music"/>
@@ -50,42 +50,6 @@
       <itunes:duration>01:00:00</itunes:duration>
       <pubDate>Sat, 13 Jun 2026 08:00:02 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur3.mp3" type="audio/mpeg" length="86401439"/>
-    </item>
-    <item>
-      <title>Doof – 12 juni 2026 – uur 1 – Latifa Tee</title>
-      <link>https://www.abc.net.au/triplej/programs/doof/doof/106768656</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/doof/doof/106768656#uur1</guid>
-      <description>Doof – 12 juni 2026 – uur 1 – Latifa Tee. Originele aflevering: Doof. Bron: ABC Triple J.</description>
-      <itunes:summary>Doof – 12 juni 2026 – uur 1 – Latifa Tee. Originele aflevering: Doof. Bron: ABC Triple J.</itunes:summary>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-      <itunes:duration>01:00:00</itunes:duration>
-      <pubDate>Fri, 12 Jun 2026 12:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur1.mp3" type="audio/mpeg" length="86401404"/>
-    </item>
-    <item>
-      <title>Doof – 12 juni 2026 – uur 2 – Latifa Tee</title>
-      <link>https://www.abc.net.au/triplej/programs/doof/doof/106768656</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/doof/doof/106768656#uur2</guid>
-      <description>Doof – 12 juni 2026 – uur 2 – Latifa Tee. Originele aflevering: Doof. Bron: ABC Triple J.</description>
-      <itunes:summary>Doof – 12 juni 2026 – uur 2 – Latifa Tee. Originele aflevering: Doof. Bron: ABC Triple J.</itunes:summary>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-      <itunes:duration>01:00:00</itunes:duration>
-      <pubDate>Fri, 12 Jun 2026 12:00:01 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur2.mp3" type="audio/mpeg" length="86401404"/>
-    </item>
-    <item>
-      <title>Doof – 12 juni 2026 – uur 3 – Latifa Tee</title>
-      <link>https://www.abc.net.au/triplej/programs/doof/doof/106768656</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/doof/doof/106768656#uur3</guid>
-      <description>Doof – 12 juni 2026 – uur 3 – Latifa Tee. Originele aflevering: Doof. Bron: ABC Triple J.</description>
-      <itunes:summary>Doof – 12 juni 2026 – uur 3 – Latifa Tee. Originele aflevering: Doof. Bron: ABC Triple J.</itunes:summary>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-      <itunes:duration>01:00:00</itunes:duration>
-      <pubDate>Fri, 12 Jun 2026 12:00:02 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/doof_106768656_uur3.mp3" type="audio/mpeg" length="86391612"/>
     </item>
     <item>
       <title>House Party – 12 juni 2026 – uur 1 – Shantan Wantan Ichiban</title>
