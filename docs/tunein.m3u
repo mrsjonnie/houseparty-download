@@ -1,7 +1,13 @@
 #EXTM3U
-#EXTINF:3600,Sat 13 Jun 2026 – House Party – uur 1 [Latifa Tee]
+#PLAYLIST:House Party – 13 juni 2026
+#EXTALB:House Party – 13 juni 2026
+#EXTART:Triple J
+#EXTINF:3600,House Party – 13 juni 2026 – uur 1 – Latifa Tee
+#EXTGRP:House Party – 13 juni 2026
 https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur1.mp3
-#EXTINF:3600,Sat 13 Jun 2026 – House Party – uur 2 [Latifa Tee]
+#EXTINF:3600,House Party – 13 juni 2026 – uur 2 – Latifa Tee
+#EXTGRP:House Party – 13 juni 2026
 https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur2.mp3
-#EXTINF:3600,Sat 13 Jun 2026 – House Party – uur 3 [Latifa Tee]
+#EXTINF:3600,House Party – 13 juni 2026 – uur 3 – Latifa Tee
+#EXTGRP:House Party – 13 juni 2026
 https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur3.mp3
