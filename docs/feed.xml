@@ -8,13 +8,49 @@
     <generator>houseparty-download</generator>
     <ttl>60</ttl>
     <atom:link href="https://mrsjonnie.github.io/houseparty-download/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Sat, 13 Jun 2026 22:29:33 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 20 Jun 2026 08:53:32 +0000</lastBuildDate>
     <itunes:author>Persoonlijke feed</itunes:author>
     <itunes:type>episodic</itunes:type>
     <itunes:summary>Triple J House Party in delen van maximaal één uur.</itunes:summary>
     <itunes:explicit>false</itunes:explicit>
     <itunes:block>yes</itunes:block>
     <itunes:category text="Music"/>
+    <item>
+      <title>House Party – 19 juni 2026 – uur 1 – Shantan Wantan Ichiban</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106795154</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106795154#uur1</guid>
+      <description>House Party – 19 juni 2026 – uur 1 – Shantan Wantan Ichiban. Originele aflevering: House Party. Bron: ABC Triple J.</description>
+      <itunes:summary>House Party – 19 juni 2026 – uur 1 – Shantan Wantan Ichiban. Originele aflevering: House Party. Bron: ABC Triple J.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>01:00:00</itunes:duration>
+      <pubDate>Fri, 19 Jun 2026 08:00:00 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106795154_uur1.mp3" type="audio/mpeg" length="86401877"/>
+    </item>
+    <item>
+      <title>House Party – 19 juni 2026 – uur 2 – Shantan Wantan Ichiban</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106795154</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106795154#uur2</guid>
+      <description>House Party – 19 juni 2026 – uur 2 – Shantan Wantan Ichiban. Originele aflevering: House Party. Bron: ABC Triple J.</description>
+      <itunes:summary>House Party – 19 juni 2026 – uur 2 – Shantan Wantan Ichiban. Originele aflevering: House Party. Bron: ABC Triple J.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>01:00:00</itunes:duration>
+      <pubDate>Fri, 19 Jun 2026 08:00:01 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106795154_uur2.mp3" type="audio/mpeg" length="86401877"/>
+    </item>
+    <item>
+      <title>House Party – 19 juni 2026 – uur 3 – Shantan Wantan Ichiban</title>
+      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106795154</link>
+      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106795154#uur3</guid>
+      <description>House Party – 19 juni 2026 – uur 3 – Shantan Wantan Ichiban. Originele aflevering: House Party. Bron: ABC Triple J.</description>
+      <itunes:summary>House Party – 19 juni 2026 – uur 3 – Shantan Wantan Ichiban. Originele aflevering: House Party. Bron: ABC Triple J.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:duration>01:00:00</itunes:duration>
+      <pubDate>Fri, 19 Jun 2026 08:00:02 +0000</pubDate>
+      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106795154_uur3.mp3" type="audio/mpeg" length="86401877"/>
+    </item>
     <item>
       <title>House Party – 13 juni 2026 – uur 1 – Latifa Tee</title>
       <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106770444</link>
@@ -50,42 +86,6 @@
       <itunes:duration>01:00:00</itunes:duration>
       <pubDate>Sat, 13 Jun 2026 08:00:02 +0000</pubDate>
       <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106770444_uur3.mp3" type="audio/mpeg" length="86401439"/>
-    </item>
-    <item>
-      <title>House Party – 12 juni 2026 – uur 1 – Shantan Wantan Ichiban</title>
-      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur1</guid>
-      <description>House Party – 12 juni 2026 – uur 1 – Shantan Wantan Ichiban. Originele aflevering: House Party. Bron: ABC Triple J.</description>
-      <itunes:summary>House Party – 12 juni 2026 – uur 1 – Shantan Wantan Ichiban. Originele aflevering: House Party. Bron: ABC Triple J.</itunes:summary>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-      <itunes:duration>01:00:00</itunes:duration>
-      <pubDate>Fri, 12 Jun 2026 08:00:00 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur1.mp3" type="audio/mpeg" length="86401463"/>
-    </item>
-    <item>
-      <title>House Party – 12 juni 2026 – uur 2 – Shantan Wantan Ichiban</title>
-      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur2</guid>
-      <description>House Party – 12 juni 2026 – uur 2 – Shantan Wantan Ichiban. Originele aflevering: House Party. Bron: ABC Triple J.</description>
-      <itunes:summary>House Party – 12 juni 2026 – uur 2 – Shantan Wantan Ichiban. Originele aflevering: House Party. Bron: ABC Triple J.</itunes:summary>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-      <itunes:duration>01:00:00</itunes:duration>
-      <pubDate>Fri, 12 Jun 2026 08:00:01 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur2.mp3" type="audio/mpeg" length="86401463"/>
-    </item>
-    <item>
-      <title>House Party – 12 juni 2026 – uur 3 – Shantan Wantan Ichiban</title>
-      <link>https://www.abc.net.au/triplej/programs/house-party/house-party/106768662</link>
-      <guid isPermaLink="false">https://www.abc.net.au/triplej/programs/house-party/house-party/106768662#uur3</guid>
-      <description>House Party – 12 juni 2026 – uur 3 – Shantan Wantan Ichiban. Originele aflevering: House Party. Bron: ABC Triple J.</description>
-      <itunes:summary>House Party – 12 juni 2026 – uur 3 – Shantan Wantan Ichiban. Originele aflevering: House Party. Bron: ABC Triple J.</itunes:summary>
-      <itunes:explicit>false</itunes:explicit>
-      <itunes:episodeType>full</itunes:episodeType>
-      <itunes:duration>01:00:00</itunes:duration>
-      <pubDate>Fri, 12 Jun 2026 08:00:02 +0000</pubDate>
-      <enclosure url="https://mrsjonnie.github.io/houseparty-download/mp3/house-party_106768662_uur3.mp3" type="audio/mpeg" length="86401463"/>
     </item>
   </channel>
 </rss>
